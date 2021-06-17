@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-const userSchema = new mongoose.Schema({
+const UserSchema = new mongoose.Schema({
   name: {
     type: String,
     required: true,
@@ -10,10 +10,6 @@ const userSchema = new mongoose.Schema({
     required: true,
     unique: false,
   },
-  color: {
-    type: String,
-    required: false,
-    unique: false,
-  },
+  reviews: { type: [{ type: mongoose.Schema.Types.ObjectId, ref: "Review" }] },
 });
-module.exports = mongoose.model("User", userSchema);
+module.exports = mongoose.model("User", UserSchema);

@@ -1,12 +1,13 @@
 const mongoose = require("mongoose");
-const partySchema = new mongoose.Schema({
+
+const PartySchema = new mongoose.Schema({
   name: {
     type: String,
     required: true,
     unique: false,
   },
   location: {
-    type: Date,
+    type: String,
     required: true,
     unique: false,
   },
@@ -25,5 +26,16 @@ const partySchema = new mongoose.Schema({
     required: false,
     unique: false,
   },
+  img: {
+    type: String,
+    required: false,
+    unique: false,
+  },
+  description: {
+    type: String,
+    required: false,
+    unique: false,
+  },
+  reviews: { type: [{ type: mongoose.Schema.Types.ObjectId, ref: "Review" }] },
 });
-module.exports = mongoose.model("Party", partySchema);
+module.exports = mongoose.model("Party", PartySchema);

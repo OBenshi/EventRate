@@ -1,3 +1,4 @@
+require("dotenv").config();
 const express = require("express");
 const mongoose = require("mongoose");
 const mongoURI = require("./config.js").mongoURI;
@@ -19,6 +20,7 @@ mongoose
 
 app.use("/users", require("./routes/users"));
 app.use("/parties", require("./routes/parties"));
+app.use("/reviews", require("./routes/reviews"));
 
 app.listen(port, () => {
   console.log("Server is running on " + port + "port");
