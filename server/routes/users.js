@@ -1,5 +1,7 @@
 const express = require("express");
 const usersModel = require("../models/usersModel");
+// import { usersModel } from "../models/usersModel";
+
 // const subReferencesPopulate = require("mongoose-sub-references-populate");
 
 const router = express.Router();
@@ -17,13 +19,27 @@ router.get("/test", (req, res) => {
 //     }
 //   });
 // });
+// router.get("/all", (req, res) => {
+//   usersModel
+//     .find({})
+//     .populate({
+//       path: "reviews",
+//       select: ["text"],
+//     })
+//     .then((users) => {
+//       res.send(users);
+//     })
+//     .catch((err) => res.send(err));
+// });
 router.get("/all", (req, res) => {
   usersModel
     .find({})
-    .populate({
-      path: "reviews",
-      select: ["text"],
-    })
+    .then(() =>
+      subPopulate(
+        "reviews"
+        // select: ["text"],
+      )
+    )
     .then((users) => {
       res.send(users);
     })

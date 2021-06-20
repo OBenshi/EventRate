@@ -10,7 +10,7 @@ router.get("/all", (req, res) => {
     .find({})
     .populate({
       path: "user",
-      select: ["_id", "name"],
+      // select: ["_id", "name"],
     })
     .populate({
       path: "party",
