@@ -14,12 +14,28 @@ router.get("/all", (req, res) => {
     })
     .populate({
       path: "party",
-      select: ["_id", "name"],
+      // select: ["_id", "name"],
     })
     .then((parties) => {
       res.send(parties);
     })
     .catch((err) => res.send(err));
 });
+// router.get("/all", (req, res) => {
+//   reviewsModel
+//     .find({})
+//     .populate({
+//       path: "user",
+//       // select: ["_id", "name"],
+//     })
+//     .populate({
+//       path: "party",
+//       select: ["_id", "name"],
+//     })
+//     .then((parties) => {
+//       res.send(parties);
+//     })
+//     .catch((err) => res.send(err));
+// });
 
 module.exports = router;
