@@ -1,5 +1,5 @@
 import React from "react";
-import FmL from "../components/FmL";
+import { FmL } from "../components/FmL";
 
 const Home = () => {
   return (

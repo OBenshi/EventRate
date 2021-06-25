@@ -1,10 +1,12 @@
-// const mongoose = require("mongoose");
-// const reviewSchema = new mongoose.Schema({
-//   user: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
-//   party: { type: mongoose.Schema.Types.ObjectId, ref: "Party" },
-//   date: { type: Date },
-//   rating: { type: Number },
-//   text: { type: String },
-// });
-
-// module.exports = mongoose.model("Review", reviewSchema);
+const mongoose = require("mongoose");
+// const subReferencesPopulate = require("mongoose-sub-references-populate");
+const reviewSchema = new mongoose.Schema({
+  _id: { type: mongoose.Schema.Types.ObjectId, required: true },
+  user: { type: mongoose.Schema.Types.ObjectId, ref: "user" },
+  party: { type: mongoose.Schema.Types.ObjectId, ref: "party" },
+  date: { type: Date },
+  rating: { type: Number },
+  text: { type: String },
+});
+// reviewSchema.plugin(subReferencesPopulate);
+module.exports = mongoose.model("review", reviewSchema);

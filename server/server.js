@@ -4,6 +4,8 @@ const mongoose = require("mongoose");
 const mongoURI = require("./config.js").mongoURI;
 const cors = require("cors");
 
+
+
 //initialize express app
 const app = express();
 const port = process.env.PORT || 5000;
@@ -14,7 +16,11 @@ app.use(cors());
 //connect to DB
 
 mongoose
-  .connect(mongoURI, { useNewurlPraser: true, useCreateIndex: true })
+  .connect(mongoURI, {
+    useNewUrlParser: true,
+    useCreateIndex: true,
+    useUnifiedTopology: true,
+  })
   .then(() => console.log("Connection to Mongo DB established"))
   .catch((err) => console.log(err));
 

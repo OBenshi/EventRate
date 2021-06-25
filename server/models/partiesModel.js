@@ -10,7 +10,7 @@ const mongoose = require("mongoose");
 // });
 // const ReviewModel = mongoose.model("Review", ReviewSchema);
 
-const PartySchema = new mongoose.Schema({
+const partySchema = new mongoose.Schema({
   name: {
     type: String,
     required: true,
@@ -47,20 +47,20 @@ const PartySchema = new mongoose.Schema({
     unique: false,
   },
   reviews: {
-    type: [{ type: mongoose.Schema.Types.ObjectId, ref: "Review" }],
+    type: [{ type: mongoose.Schema.Types.ObjectId, ref: "review" }],
   },
-  reviews: {
-    type: [
-      {
-        _id: { type: mongoose.Schema.Types.ObjectId },
-        user: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
-        party: { type: mongoose.Schema.Types.ObjectId, ref: "Party" },
-        date: { type: Date },
-        rating: { type: Number },
-        text: { type: String },
-      },
-    ],
-  },
+  // reviews: {
+  //   type: [
+  //     {
+  //       _id: { type: mongoose.Schema.Types.ObjectId },
+  //       user: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+  //       party: { type: mongoose.Schema.Types.ObjectId, ref: "Party" },
+  //       date: { type: Date },
+  //       rating: { type: Number },
+  //       text: { type: String },
+  //     },
+  //   ],
+  // },
   //   type: [
   //     {
   //       user: { type: mongoose.Schema.Types.ObjectId, ref: "Review.User" },
@@ -75,5 +75,5 @@ const PartySchema = new mongoose.Schema({
 });
 // const PartyModel = mongoose.model("Party", PartySchema);
 // module.exports = PartyModel;
-PartySchema.plugin(subReferencesPopulate);
-module.exports = mongoose.model("Party", PartySchema);
+// PartySchema.plugin(subReferencesPopulate);
+module.exports = mongoose.model("party", partySchema);

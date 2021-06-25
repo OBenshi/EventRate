@@ -18,6 +18,8 @@ function App() {
           <Route exact path="/" children={<Home />} />
           <Route exact path="/trulolo" children={<Trulolo />} />
           <Route exact path="/parties" children={<ListView />} />
+          <Route exact path="/signup" children={<SignUp />} />
+
           <Route
             exact
             path="/parties/:partyName"

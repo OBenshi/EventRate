@@ -28,7 +28,6 @@ function ListView(props) {
         {parties.length &&
           parties.map((party) => (
             <Grid item xs={12} key={party._id}>
-              {" "}
               <PartyInfoCard party={party} />
             </Grid>
           ))}

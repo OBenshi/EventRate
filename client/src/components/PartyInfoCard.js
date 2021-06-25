@@ -1,5 +1,6 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
+import { averageScores } from "./Toolbox";
 import Card from "@material-ui/core/Card";
 import CardActionArea from "@material-ui/core/CardActionArea";
 import CardActions from "@material-ui/core/CardActions";
@@ -30,7 +31,20 @@ const useStyles = makeStyles({
 export default function PartyInfoCard(props) {
   const party = props.party;
   const classes = useStyles();
+  const [averagePopularity, setAveragePopularity] = useState(0);
 
+  const calcPartyRating = (party) => {
+    const initialVals = { avg: 0, n: 0 };
+    setAveragePopularity(party.reviews.reduce(averageScores, initialVals).avg);
+    console.log("Average popularity:", averagePopularity);
+  };
+  //   const calcAveragePopularity = (partyX) => {
+  //     party.reviews.reduce(averageScores, initialVals).avg;
+  //   };
+  // const partyRating =()=>{const initialVals = { avg: 0, n: 0 };calcAveragePopularity(party);}
+  useEffect(() => {
+    calcPartyRating(party);
+  }, []);
   return (
     <Card className={classes.partyCard}>
       <CardActionArea>
@@ -45,7 +59,7 @@ export default function PartyInfoCard(props) {
               {party.name}
             </Typography>
           </Link>
-
+          <h1>{averagePopularity && averagePopularity}</h1>
           {party.description && (
             <Typography variant="body2" color="textSecondary" component="p">
               {party.description}
