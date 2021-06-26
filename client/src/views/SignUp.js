@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState, useRef } from "react";
 import Avatar from "@material-ui/core/Avatar";
 import Button from "@material-ui/core/Button";
 import CssBaseline from "@material-ui/core/CssBaseline";
@@ -12,6 +12,7 @@ import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
 import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
 import Container from "@material-ui/core/Container";
+import { DatePicker } from "@material-ui/pickers";
 
 function Copyright() {
   return (
@@ -48,6 +49,15 @@ const useStyles = makeStyles((theme) => ({
 
 export default function SignUp() {
   const classes = useStyles();
+  const [selectedDate, handleDateChange] = useState(new Date());
+  const birthdateRef = useRef();
+
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    // const tina = .toISOString();
+    // const tin = selectedDate.toDateString;
+    console.log(selectedDate.toISOString());
+  };
 
   return (
     <Container component="main" maxWidth="xs">
@@ -61,6 +71,17 @@ export default function SignUp() {
         </Typography>
         <form className={classes.form} noValidate>
           <Grid container spacing={2}>
+            <Grid item xs={12}>
+              <TextField
+                variant="outlined"
+                required
+                fullWidth
+                id="userName"
+                label="Username"
+                name="username"
+                autoComplete="username"
+              />
+            </Grid>
             <Grid item xs={12} sm={6}>
               <TextField
                 autoComplete="fname"
@@ -96,6 +117,20 @@ export default function SignUp() {
               />
             </Grid>
             <Grid item xs={12}>
+              <DatePicker
+                disableFuture
+                variant="outlined"
+                fullWidth
+                inputRef={birthdateRef}
+                openTo="year"
+                format="dd/MM/yyyy"
+                label="Date of birth"
+                views={["year", "month", "date"]}
+                value={selectedDate}
+                onChange={handleDateChange}
+              />
+            </Grid>
+            <Grid item xs={12}>
               <TextField
                 variant="outlined"
                 required
@@ -120,6 +155,7 @@ export default function SignUp() {
             variant="contained"
             color="primary"
             className={classes.submit}
+            onClick={handleSubmit}
           >
             Sign Up
           </Button>
