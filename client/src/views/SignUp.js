@@ -13,19 +13,7 @@ import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
 import Container from "@material-ui/core/Container";
 import { DatePicker } from "@material-ui/pickers";
-
-function Copyright() {
-  return (
-    <Typography variant="body2" color="textSecondary" align="center">
-      {"Copyright © "}
-      <Link color="inherit" href="https://material-ui.com/">
-        Your Website
-      </Link>{" "}
-      {new Date().getFullYear()}
-      {"."}
-    </Typography>
-  );
-}
+import Copyright from "../components/copyright";
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -51,6 +39,12 @@ export default function SignUp() {
   const classes = useStyles();
   const [selectedDate, handleDateChange] = useState(new Date());
   const birthdateRef = useRef();
+  const emailRef = useRef();
+  const usernameRef = useRef();
+  const passwordRef = useRef();
+  const passwordConfirmRef = useRef();
+  const firstNameRef = useRef();
+  const lastNameRef = useRef();
 
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -76,7 +70,8 @@ export default function SignUp() {
                 variant="outlined"
                 required
                 fullWidth
-                id="userName"
+                id="username"
+                inputRef={usernameRef}
                 label="Username"
                 name="username"
                 autoComplete="username"
@@ -90,6 +85,7 @@ export default function SignUp() {
                 required
                 fullWidth
                 id="firstName"
+                inputRef={firstNameRef}
                 label="First Name"
                 autoFocus
               />
@@ -100,6 +96,7 @@ export default function SignUp() {
                 required
                 fullWidth
                 id="lastName"
+                inputRef={lastNameRef}
                 label="Last Name"
                 name="lastName"
                 autoComplete="lname"
@@ -111,6 +108,7 @@ export default function SignUp() {
                 required
                 fullWidth
                 id="email"
+                inputRef={emailRef}
                 label="Email Address"
                 name="email"
                 autoComplete="email"
@@ -121,6 +119,7 @@ export default function SignUp() {
                 disableFuture
                 variant="outlined"
                 fullWidth
+                id="birthdate"
                 inputRef={birthdateRef}
                 openTo="year"
                 format="dd/MM/yyyy"
@@ -139,7 +138,21 @@ export default function SignUp() {
                 label="Password"
                 type="password"
                 id="password"
+                inputRef={passwordRef}
                 autoComplete="current-password"
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <TextField
+                variant="outlined"
+                required
+                fullWidth
+                name="passwordConfirm"
+                label="Confirm Password"
+                type="password"
+                id="passwordConfirm"
+                inputRef={passwordConfirmRef}
+                // autoComplete="current-password"
               />
             </Grid>
             <Grid item xs={12}>
