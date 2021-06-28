@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState, useRef } from "react";
 import Avatar from "@material-ui/core/Avatar";
 import Button from "@material-ui/core/Button";
 import CssBaseline from "@material-ui/core/CssBaseline";
@@ -36,6 +36,30 @@ const useStyles = makeStyles((theme) => ({
 
 export default function SignIn() {
   const classes = useStyles();
+  const passwordRef = useRef();
+  const emailRef = useRef();
+
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    console.log(passwordRef.current.value);
+    fetch("http://localhost:5000/users/login", {
+      method: "post",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        password: passwordRef.current.value,
+        email: emailRef.current.value,
+      }),
+    })
+      .then((res) => res.json())
+      .then((things) => {
+        console.log(things);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
 
   return (
     <Container component="main" maxWidth="xs">
@@ -47,7 +71,7 @@ export default function SignIn() {
         <Typography component="h1" variant="h5">
           Sign in
         </Typography>
-        <form className={classes.form} noValidate>
+        <form className={classes.form} onSubmit={handleSubmit} noValidate>
           <TextField
             variant="outlined"
             margin="normal"
@@ -57,6 +81,7 @@ export default function SignIn() {
             label="Email Address"
             name="email"
             autoComplete="email"
+            inputRef={emailRef}
             autoFocus
           />
           <TextField
@@ -69,6 +94,7 @@ export default function SignIn() {
             type="password"
             id="password"
             autoComplete="current-password"
+            inputRef={passwordRef}
           />
           <FormControlLabel
             control={<Checkbox value="remember" color="primary" />}

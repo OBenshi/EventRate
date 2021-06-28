@@ -60,11 +60,12 @@ router.get("/all", (req, res) => {
 //*----------------------------- GET USER PROFILE ----------------------------- */
 
 router.get(
-  "/:username",
+  "/profile",
   passport.authenticate("jwt", { session: false }),
   (req, res) => {
     userModel
       .find({ _id: req.user._id })
+      // .populate("reviews")
       .populate({
         path: "reviews",
         populate: { path: "party", select: ["_id", "name"] },
@@ -83,12 +84,14 @@ router.get(
 //*--------------------------------- SIGN-UP -------------------------------- */
 
 router.post("/signup", (req, res) => {
+  console.log(req.body);
   const reqEmail = req.body.email;
   const reqUsername = req.body.username;
   const reqPassword = req.body.password;
-  const reqName = req.body.name;
-  const reqBirthday = req.body.birthday;
-  const reqReviews = [];
+  const reqFirstName = req.body.firstName;
+  const reqLastName = req.body.lastName;
+  const reqBirthday = req.body.birthdate;
+  const reqReviews = req.body.reviews || [];
 
   userModel.findOne({ email: reqEmail }, (err, user) => {
     if (err) {
@@ -103,14 +106,19 @@ router.post("/signup", (req, res) => {
             email: reqEmail,
             username: reqUsername,
             password: hash,
-            name: reqName,
+            firstName: reqFirstName,
+            lastName: reqLastName,
             birthday: reqBirthday,
-            reviews: reqReviews,
+            reviews: reqReviews || [],
           });
           newUser
             .save()
             .then((user) => {
-              res.send(user);
+              const options = {
+                id: user._id,
+              };
+              const token = jwt.sign(options, secretOrKey, { expiresIn: "8h" });
+              res.send({ user, token });
             })
             .catch((err) => {
               res.send(err);

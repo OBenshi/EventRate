@@ -11,27 +11,34 @@ import ListView from "./views/ListView.js";
 import EventDetailView from "./views/EventDetailView";
 import { MuiPickersUtilsProvider } from "@material-ui/pickers";
 import DateFnsUtils from "@date-io/date-fns";
+import SignIn from "./views/SignIn";
+import Dashboard from "./views/Dashboard";
+import { AuthProvider } from "./Contexts/AuthContext";
 function App() {
   return (
     <div>
-      <MuiPickersUtilsProvider utils={DateFnsUtils}>
-        <Router>
-          <PrimaryAppBar />
-          <Switch>
-            <Route exact path="/" children={<Home />} />
-            <Route exact path="/trulolo" children={<Trulolo />} />
-            <Route exact path="/parties" children={<ListView />} />
-            <Route exact path="/signup" children={<SignUp />} />
-
-            <Route
-              exact
-              path="/parties/:partyName"
-              children={<EventDetailView />}
-            />
-            <Route exact path="/submitevent" children={<SubmitEvent />} />
-          </Switch>
-        </Router>
-      </MuiPickersUtilsProvider>
+      {" "}
+      <AuthProvider>
+        <MuiPickersUtilsProvider utils={DateFnsUtils}>
+          <Router>
+            <PrimaryAppBar />
+            <Switch>
+              <Route exact path="/" children={<Home />} />
+              <Route exact path="/trulolo" children={<Trulolo />} />
+              <Route exact path="/parties" children={<ListView />} />
+              <Route exact path="/signin" children={<SignIn />} />
+              <Route exact path="/signup" children={<SignUp />} />
+              <Route exact path="/dashboard" children={<Dashboard />} />
+              <Route
+                exact
+                path="/parties/:partyName"
+                children={<EventDetailView />}
+              />
+              <Route exact path="/submitevent" children={<SubmitEvent />} />
+            </Switch>
+          </Router>
+        </MuiPickersUtilsProvider>
+      </AuthProvider>
     </div>
   );
 }

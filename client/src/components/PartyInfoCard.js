@@ -38,10 +38,6 @@ export default function PartyInfoCard(props) {
     setAveragePopularity(party.reviews.reduce(averageScores, initialVals).avg);
     console.log("Average popularity:", averagePopularity);
   };
-  //   const calcAveragePopularity = (partyX) => {
-  //     party.reviews.reduce(averageScores, initialVals).avg;
-  //   };
-  // const partyRating =()=>{const initialVals = { avg: 0, n: 0 };calcAveragePopularity(party);}
   useEffect(() => {
     calcPartyRating(party);
   }, []);

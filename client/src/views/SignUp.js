@@ -5,7 +5,7 @@ import CssBaseline from "@material-ui/core/CssBaseline";
 import TextField from "@material-ui/core/TextField";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import Checkbox from "@material-ui/core/Checkbox";
-import Link from "@material-ui/core/Link";
+// import Link from "@material-ui/core/Link";
 import Grid from "@material-ui/core/Grid";
 import Box from "@material-ui/core/Box";
 import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
@@ -14,6 +14,9 @@ import { makeStyles } from "@material-ui/core/styles";
 import Container from "@material-ui/core/Container";
 import { DatePicker } from "@material-ui/pickers";
 import Copyright from "../components/copyright";
+import { Link, useHistory } from "react-router-dom";
+import axios from "axios";
+import Alert from "@material-ui/lab/Alert";
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -37,6 +40,9 @@ const useStyles = makeStyles((theme) => ({
 
 export default function SignUp() {
   const classes = useStyles();
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
+  const history = useHistory();
   const [selectedDate, handleDateChange] = useState(new Date());
   const birthdateRef = useRef();
   const emailRef = useRef();
@@ -46,11 +52,38 @@ export default function SignUp() {
   const firstNameRef = useRef();
   const lastNameRef = useRef();
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
-    // const tina = .toISOString();
-    // const tin = selectedDate.toDateString;
-    console.log(selectedDate.toISOString());
+    setLoading(true);
+    if (passwordRef.current.value !== passwordConfirmRef.current.value) {
+      setLoading(false);
+      return setError(`Passwords do not match`);
+    }
+    const newUser = {
+      username: usernameRef.current.value,
+      email: emailRef.current.value,
+      password: passwordRef.current.value,
+      firstName: firstNameRef.current.value,
+      lastName: lastNameRef.current.value,
+      birthdate: selectedDate.toISOString(),
+      reviews: [],
+    };
+    fetch("http://localhost:5000/users/signup", {
+      method: "post",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(newUser),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        localStorage.setItem("token", data.token);
+      })
+      .catch((err) => {
+        setLoading(false);
+        console.log(err);
+      });
+    setLoading(false);
   };
 
   return (
@@ -63,7 +96,8 @@ export default function SignUp() {
         <Typography component="h1" variant="h5">
           Sign up
         </Typography>
-        <form className={classes.form} noValidate>
+        {error && <Alert severity="error">{error}</Alert>}
+        <form className={classes.form} onSubmit={handleSubmit} noValidate>
           <Grid container spacing={2}>
             <Grid item xs={12}>
               <TextField
@@ -155,12 +189,6 @@ export default function SignUp() {
                 // autoComplete="current-password"
               />
             </Grid>
-            <Grid item xs={12}>
-              <FormControlLabel
-                control={<Checkbox value="allowExtraEmails" color="primary" />}
-                label="I want to receive inspiration, marketing promotions and updates via email."
-              />
-            </Grid>
           </Grid>
           <Button
             type="submit"
@@ -168,7 +196,7 @@ export default function SignUp() {
             variant="contained"
             color="primary"
             className={classes.submit}
-            onClick={handleSubmit}
+            disabled={loading}
           >
             Sign Up
           </Button>
