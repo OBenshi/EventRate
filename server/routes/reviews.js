@@ -1,58 +1,134 @@
+//==============================================================
+//
+//*  #####    #####  ##   ##  ##  #####  ##      ##   ####
+//*  ##  ##   ##     ##   ##  ##  ##     ##      ##  ##
+//*  #####    #####  ##   ##  ##  #####  ##  ##  ##   ###
+//*  ##  ##   ##      ## ##   ##  ##     ##  ##  ##     ##
+//*  ##   ##  #####    ###    ##  #####   ###  ###   ####
+//
+//*  #####     #####   ##   ##  ######  #####
+//*  ##  ##   ##   ##  ##   ##    ##    ##
+//*  #####    ##   ##  ##   ##    ##    #####
+//*  ##  ##   ##   ##  ##   ##    ##    ##
+//*  ##   ##   #####    #####     ##    #####
+//
+//==============================================================
+
+/* -------------------------------------------------------------------------- */
+//*       ======================================================              //
+//*       ======================= IMPORTS ======================              //
+//*       ======================================================              //
+
 const express = require("express");
+const partiesModel = require("../models/partiesModel");
 const reviewModel = require("../models/reviewsModel");
 const router = express.Router();
-const userModel = require("../models/usersModel");
+const usersModel = require("../models/usersModel");
+
+/* -------------------------------------------------------------------------- */
+//        ======================================================              //
+//*       =======================  ROUTES ======================              //
+//        ======================================================              //
+/* -------------------------------------------------------------------------- */
+//*                                GET ROUTES                                 */
+/* -------------------------------------------------------------------------- */
+
+//*------------------------------- TEST ROUTE ------------------------------- */
+
 router.get("/test", (req, res) => {
   res.send({ msg: 123 });
 });
-// router.get("/all", (req, res) => {
-//   reviewsModel
-//     .find({})
-//     .populate({
-//       path: "user",
-//       // select: ["_id", "name"],
-//     })
-//     .populate({
-//       path: "party",
-//       // select: ["_id", "name"],
-//     })
-//     .then((parties) => {
-//       res.send(parties);
-//     })
-//     .catch((err) => res.send(err));
-// });
+
+//*----------------------------- GET ALL Reviews ---------------------------- */
+
+router.get("/all", (req, res) => {
+  reviewModel
+    .find({})
+    .populate({
+      path: "user",
+      // select: ["_id", "name"],
+    })
+    .populate({
+      path: "party",
+      // select: ["_id", "name"],
+    })
+    .then((parties) => {
+      res.send(parties);
+    })
+    .catch((err) => res.send(err));
+});
+
+/* -------------------------------------------------------------------------- */
+//*                                POST ROUTES                                */
+/* -------------------------------------------------------------------------- */
+
+//*-------------------------------- NEW Review ------------------------------ */
 
 router.post("/new", (req, res) => {
-  console.log(req.body);
+  // console.log(req.body);
   const reqUserId = req.body.userId;
   const reqParty = req.body.party;
   const reqDate = req.body.date;
   const reqRating = req.body.rating || 1;
   const reqText = req.body.text || "";
 
-  // const newReview = new reviewModel();
-  reviewModel
-    .insert({
-      user: reqUserId,
-      party: reqParty,
-      date: reqDate,
-      rating: reqRating,
-      text: reqText,
-    })
+  //? CREATING A Review
+  const newReview = new reviewModel({
+    user: reqUserId,
+    party: reqParty,
+    date: reqDate,
+    rating: reqRating,
+    text: reqText,
+  });
+
+  //? ADDING Review TO USER DATA
+  usersModel
+    .updateOne(
+      { _id: newReview.user },
+      { $push: { reviews: newReview._id } },
+      (err, user) => {
+        if (err) {
+          res.json({ error: err });
+        }
+        if (user) {
+          console.log(user);
+        }
+      }
+    )
+    .catch((err) => res.send(err));
+
+  //? ADDING Review TO PARTY DATA
+  partiesModel
+    .updateOne(
+      { _id: newReview.party },
+      { $push: { reviews: newReview._id } },
+      (err, party) => {
+        if (err) {
+          res.json({ error: err });
+        }
+        if (party) {
+          console.log(party);
+        }
+      }
+    )
+    .catch((err) => res.send(err));
+
+  //? SAVING Review AND SENDING RES
+  newReview
+    .save()
     .then((review) => {
-      users.update(
-        { _id: `${reqUserId}` },
-        { $push: { reviews: "review._id" } }
-      );
-      parties.update(
-        { _id: `${reqParty}` },
-        { $push: { reviews: "review._id" } }
-      );
-      res.send({ hi });
+      res.send(review);
     })
     .catch((err) => {
       res.send(err);
     });
 });
 
+/* -------------------------------------------------------------------------- */
+//       ====================================================== //
+//*      ======================= EXPORT ======================= //
+//       ====================================================== //
+
 module.exports = router;
+
+/* -------------------------------------------------------------------------- */

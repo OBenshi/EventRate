@@ -17,26 +17,7 @@ import Copyright from "../components/copyright";
 import { Link, useHistory } from "react-router-dom";
 import axios from "axios";
 import Alert from "@material-ui/lab/Alert";
-
-const useStyles = makeStyles((theme) => ({
-  paper: {
-    marginTop: theme.spacing(8),
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "center",
-  },
-  avatar: {
-    margin: theme.spacing(1),
-    backgroundColor: theme.palette.secondary.main,
-  },
-  form: {
-    width: "100%", // Fix IE 11 issue.
-    marginTop: theme.spacing(3),
-  },
-  submit: {
-    margin: theme.spacing(3, 0, 2),
-  },
-}));
+import { useStyles } from "../components/Toolbox/cssTheme";
 
 export default function SignUp() {
   const classes = useStyles();
@@ -44,7 +25,7 @@ export default function SignUp() {
   const [loading, setLoading] = useState(false);
   const history = useHistory();
   const [selectedDate, handleDateChange] = useState(new Date());
-  const birthdateRef = useRef();
+  const birthdayRef = useRef();
   const emailRef = useRef();
   const usernameRef = useRef();
   const passwordRef = useRef();
@@ -65,8 +46,9 @@ export default function SignUp() {
       password: passwordRef.current.value,
       firstName: firstNameRef.current.value,
       lastName: lastNameRef.current.value,
-      birthdate: selectedDate.toISOString(),
+      birthday: selectedDate.toISOString(),
       reviews: [],
+      own_parties: [],
     };
     fetch("http://localhost:5000/users/signup", {
       method: "post",
@@ -154,7 +136,7 @@ export default function SignUp() {
                 variant="outlined"
                 fullWidth
                 id="birthdate"
-                inputRef={birthdateRef}
+                inputRef={birthdayRef}
                 openTo="year"
                 format="dd/MM/yyyy"
                 label="Date of birth"

@@ -16,7 +16,7 @@
 
 /* -------------------------------------------------------------------------- */
 //*       ======================================================              //
-//*       ======================= IMPORTS ======================              //
+//*       =============== SECTION IMPORTS ======================              //
 //*       ======================================================              //
 
 const express = require("express");
@@ -27,21 +27,23 @@ const passport = require("passport");
 const userModel = require("../models/usersModel");
 const router = express.Router();
 
-/* -------------------------------------------------------------------------- */
+//* ----------------------- END §SECTION IMPORTS ---------------------------- */
+
 //        ======================================================              //
-//*       =======================  ROUTES ======================              //
+//*       ================ SECTION  ROUTES =====================              //
 //        ======================================================              //
 /* -------------------------------------------------------------------------- */
-//*                                GET ROUTES                                 */
+//*                        SECTION GET ROUTES                                 */
 /* -------------------------------------------------------------------------- */
 
-//*------------------------------- TEST ROUTE ------------------------------- */
+//*------------------------SECTION TEST ROUTE ------------------------------- */
 
 router.get("/test", (req, res) => {
   res.send({ msg: process.env.MY_TRY });
 });
+//* ----------------------- END §SECTION TEST ROUTE -------------------------- */
 
-//*------------------------------ GET ALL USERS ----------------------------- */
+//*----------------------- SECTION GET ALL USERS ----------------------------- */
 
 router.get("/all", (req, res) => {
   userModel
@@ -57,7 +59,9 @@ router.get("/all", (req, res) => {
     .catch((err) => res.send(err));
 });
 
-//*----------------------------- GET USER PROFILE ----------------------------- */
+//* --------------------- END §SECTION GET ALL USERS --------------------------------- */
+
+//*------------------------ END SECTION GET USER PROFILE ----------------------------- */
 
 router.get(
   "/profile",
@@ -77,11 +81,15 @@ router.get(
     // res.send(req.user);
   }
 );
+
+//* -------------------- END §SECTION GET USER PROFILE ----------------------- */
+//* ---------------------- END §SECTION POST ROUTES -------------------------- */
+
 /* -------------------------------------------------------------------------- */
-//*                                POST ROUTES                                */
+//*                        SECTION POST ROUTES                                */
 /* -------------------------------------------------------------------------- */
 
-//*--------------------------------- SIGN-UP -------------------------------- */
+//*------------------------- SECTION SIGN-UP -------------------------------- */
 
 router.post("/signup", (req, res) => {
   console.log(req.body);
@@ -90,8 +98,9 @@ router.post("/signup", (req, res) => {
   const reqPassword = req.body.password;
   const reqFirstName = req.body.firstName;
   const reqLastName = req.body.lastName;
-  const reqBirthday = req.body.birthdate;
+  const reqBirthday = req.body.birthday;
   const reqReviews = req.body.reviews || [];
+  const reqOwnParties = req.body.ownParties || [];
 
   userModel.findOne({ email: reqEmail }, (err, user) => {
     if (err) {
@@ -110,6 +119,7 @@ router.post("/signup", (req, res) => {
             lastName: reqLastName,
             birthday: reqBirthday,
             reviews: reqReviews || [],
+            own_parties: reqOwnParties || [],
           });
           newUser
             .save()
@@ -129,7 +139,9 @@ router.post("/signup", (req, res) => {
   });
 });
 
-//*---------------------------------- LOGIN --------------------------------- */
+//*-------------------------- END §SECTION SIGN - UP-------------------------- * /
+
+//*------------------------------ SECTION LOGIN --------------------------------- */
 
 router.post("/login", (req, res) => {
   const email = req.body.email;
@@ -158,6 +170,10 @@ router.post("/login", (req, res) => {
     }
   });
 });
+
+//* --------------------------- END §SECTION LOGIN --------------------------- */
+//* ------------------------ END §SECTION POST ROUTES ------------------------ */
+//* --------------------------- END §SECTION ROUTES -------------------------- */
 
 /* -------------------------------------------------------------------------- */
 //       ====================================================== //

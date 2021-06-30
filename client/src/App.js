@@ -14,31 +14,35 @@ import DateFnsUtils from "@date-io/date-fns";
 import SignIn from "./views/SignIn";
 import Dashboard from "./views/Dashboard";
 import { AuthProvider } from "./Contexts/AuthContext";
+import { CssBaseline, ThemeProvider } from "@material-ui/core";
+import { theme } from "./components/Toolbox/cssTheme";
 function App() {
   return (
     <div>
-      {" "}
-      <AuthProvider>
-        <MuiPickersUtilsProvider utils={DateFnsUtils}>
-          <Router>
-            <PrimaryAppBar />
-            <Switch>
-              <Route exact path="/" children={<Home />} />
-              <Route exact path="/trulolo" children={<Trulolo />} />
-              <Route exact path="/parties" children={<ListView />} />
-              <Route exact path="/signin" children={<SignIn />} />
-              <Route exact path="/signup" children={<SignUp />} />
-              <Route exact path="/dashboard" children={<Dashboard />} />
-              <Route
-                exact
-                path="/parties/:partyName"
-                children={<EventDetailView />}
-              />
-              <Route exact path="/submitevent" children={<SubmitEvent />} />
-            </Switch>
-          </Router>
-        </MuiPickersUtilsProvider>
-      </AuthProvider>
+      <CssBaseline />
+      <ThemeProvider theme={theme}>
+        <AuthProvider>
+          <MuiPickersUtilsProvider utils={DateFnsUtils}>
+            <Router>
+              <PrimaryAppBar />
+              <Switch>
+                <Route exact path="/" children={<Home />} />
+                <Route exact path="/testing" children={<Trulolo />} />
+                <Route exact path="/parties" children={<ListView />} />
+                <Route exact path="/signin" children={<SignIn />} />
+                <Route exact path="/signup" children={<SignUp />} />
+                <Route exact path="/dashboard" children={<Dashboard />} />
+                <Route
+                  exact
+                  path="/parties/:partyName"
+                  children={<EventDetailView />}
+                />
+                <Route exact path="/submitevent" children={<SubmitEvent />} />
+              </Switch>
+            </Router>
+          </MuiPickersUtilsProvider>
+        </AuthProvider>
+      </ThemeProvider>
     </div>
   );
 }

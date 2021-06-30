@@ -19,61 +19,42 @@ const partySchema = new mongoose.Schema({
   location: {
     type: String,
     required: true,
-    unique: false,
   },
-  djs: {
-    type: String,
+  Djs: {
+    type: [{ type: String }],
     required: false,
-    unique: false,
   },
   musical_genre: {
     type: Array,
     required: false,
-    unique: false,
   },
   rating: {
     type: Number,
     required: false,
-    unique: false,
   },
   img: {
     type: String,
     required: false,
-    unique: false,
   },
   description: {
     type: String,
     required: false,
-    unique: false,
   },
   reviews: {
     type: [{ type: mongoose.Schema.Types.ObjectId, ref: "review" }],
   },
-  // reviews: {
-  //   type: [
-  //     {
-  //       _id: { type: mongoose.Schema.Types.ObjectId },
-  //       user: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
-  //       party: { type: mongoose.Schema.Types.ObjectId, ref: "Party" },
-  //       date: { type: Date },
-  //       rating: { type: Number },
-  //       text: { type: String },
-  //     },
-  //   ],
-  // },
-  //   type: [
-  //     {
-  //       user: { type: mongoose.Schema.Types.ObjectId, ref: "Review.User" },
-  //       // party: { type: mongoose.Schema.Types.ObjectId, ref: "Party" },
-  //       date: { type: Date },
-  //       rating: { type: Number },
-  //       text: { type: String },
-  //     },
-  //   ],
-  // },
-  // _id: { type: mongoose.Schema.Types.ObjectId },
+  organizers: {
+    type: [{ type: mongoose.Schema.Types.ObjectId, ref: "user" }],
+    required: true,
+  },
+  post_date: {
+    type: Date,
+    required: true,
+  },
+  date: {
+    type: Date,
+    required: true,
+  },
 });
-// const PartyModel = mongoose.model("Party", PartySchema);
-// module.exports = PartyModel;
-// PartySchema.plugin(subReferencesPopulate);
+
 module.exports = mongoose.model("party", partySchema);

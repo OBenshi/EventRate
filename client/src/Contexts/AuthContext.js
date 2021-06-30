@@ -1,3 +1,4 @@
+import { set } from "date-fns/esm";
 import React, { useState, useEffect, useContext } from "react";
 import {
   NavLink,
@@ -12,9 +13,8 @@ export const useAuth = () => useContext(AuthContext);
 
 export function AuthProvider({ children }) {
   const [userInfo, setUserInfo] = useState([]);
-  const [isUserThere, setIsUserThere] = useState(false);
+  const [isUser, setIsUser] = useState(false);
   const token = localStorage.getItem("token");
-  const value = { token, userInfo };
 
   const getUserInfo = async () => {
     if (token !== null) {
@@ -27,6 +27,7 @@ export function AuthProvider({ children }) {
         .then((data) => {
           console.log("I'm data from AuthContext", data[0]);
           setUserInfo(data[0]);
+          setIsUser(true);
         });
     }
   };
@@ -34,6 +35,6 @@ export function AuthProvider({ children }) {
   useEffect(() => {
     getUserInfo();
   }, []);
-
+  const value = { token, userInfo, isUser };
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }

@@ -39,6 +39,9 @@ const userSchema = new mongoose.Schema({
   reviews: {
     type: [{ type: mongoose.Schema.Types.ObjectId, ref: "review" }],
   },
+  own_parties: {
+    type: [{ type: mongoose.Schema.Types.ObjectId, ref: "party" }],
+  },
   // reviews: {
   //   type: [
   //     {
