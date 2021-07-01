@@ -60,6 +60,7 @@ export default function SignUp() {
       .then((res) => res.json())
       .then((data) => {
         localStorage.setItem("token", data.token);
+        history.push("/parties");
       })
       .catch((err) => {
         setLoading(false);

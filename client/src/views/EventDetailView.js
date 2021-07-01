@@ -8,25 +8,31 @@ import {
   useParams,
   useRouteMatch,
 } from "react-router-dom";
-import { Paper, Typography, Grid } from "@material-ui/core";
+import { Paper, Typography, Grid, Button } from "@material-ui/core";
 import { useStyles } from "../components/Toolbox/cssTheme";
 import ReviewBox from "../components/ReviewBox";
 import MakeReview from "../components/MakeReview";
+import { useAuth } from "../Contexts/AuthContext";
+import { useParty } from "../Contexts/PartyContext";
 function EventDetailView(params) {
+  const { refresh, setRefresh } = useParty();
   const { partyName } = useParams();
   const classes = useStyles();
   const [party, setParty] = useState({});
+  const [reviews, setReviews] = useState();
+  const { isUser } = useAuth();
+
   useEffect(() => {
     fetch(`http://localhost:5000/parties/${partyName}`)
       .then((res) => res.json())
       .then((data) => {
-        console.log(data[0]);
+        setReviews(data[0].reviews);
         setParty(data[0]);
       });
-  }, []);
+  }, [refresh]);
   return (
     <div>
-      {console.log(party.reviews)}
+      {console.log(888888888888888888888888, reviews)}
       <Paper elevation={3} className={classes.cork}>
         <Grid container justify="center">
           <Grid item xs={12}>
@@ -74,20 +80,22 @@ function EventDetailView(params) {
                     <li key={`${party.name},${genre}`}>{genre}</li>
                   ))}
                 </ul>
+                {/* <Button onClick={() => setRefresh(!refresh)}>123</Button> */}
               </Paper>
             </Grid>
           )}
+
           <Grid item xs={12}>
             <Paper elevation={3} className={classes.postIt}>
               {" "}
-              <MakeReview />
+              <MakeReview party={party} />
             </Paper>
           </Grid>
         </Grid>
         {party.reviews ? (
-          party.reviews.map((review) => (
-            <ReviewBox review={review} key={review._id} />
-          ))
+          party.reviews
+            .sort()
+            .map((review) => <ReviewBox review={review} key={review._id} />)
         ) : (
           <p>no reviews</p>
         )}

@@ -92,6 +92,8 @@ router.get(
 //*------------------------- SECTION SIGN-UP -------------------------------- */
 
 router.post("/signup", (req, res) => {
+  //TODO password and validation
+  //TODO error handling
   console.log(req.body);
   const reqEmail = req.body.email;
   const reqUsername = req.body.username;
@@ -131,7 +133,7 @@ router.post("/signup", (req, res) => {
               res.send({ user, token });
             })
             .catch((err) => {
-              res.send(err);
+              res.json({ error: err });
             });
         });
       });

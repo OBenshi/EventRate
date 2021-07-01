@@ -14,6 +14,7 @@ import DateFnsUtils from "@date-io/date-fns";
 import SignIn from "./views/SignIn";
 import Dashboard from "./views/Dashboard";
 import { AuthProvider } from "./Contexts/AuthContext";
+import { PartyProvider } from "./Contexts/PartyContext";
 import { CssBaseline, ThemeProvider } from "@material-ui/core";
 import { theme } from "./components/Toolbox/cssTheme";
 function App() {
@@ -27,16 +28,19 @@ function App() {
               <PrimaryAppBar />
               <Switch>
                 <Route exact path="/" children={<Home />} />
-                <Route exact path="/testing" children={<Trulolo />} />
-                <Route exact path="/parties" children={<ListView />} />
+                <PartyProvider>
+                  <Route exact path="/testing" children={<Trulolo />} />
+                  <Route exact path="/parties" children={<ListView />} />
+                  <Route
+                    exact
+                    path="/parties/:partyName"
+                    children={<EventDetailView />}
+                  />
+                </PartyProvider>
                 <Route exact path="/signin" children={<SignIn />} />
                 <Route exact path="/signup" children={<SignUp />} />
                 <Route exact path="/dashboard" children={<Dashboard />} />
-                <Route
-                  exact
-                  path="/parties/:partyName"
-                  children={<EventDetailView />}
-                />
+
                 <Route exact path="/submitevent" children={<SubmitEvent />} />
               </Switch>
             </Router>
