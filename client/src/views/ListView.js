@@ -1,6 +1,6 @@
 import React from "react";
 import { useEffect, useState } from "react";
-import { Grid } from "@material-ui/core";
+import { Grid, Typography } from "@material-ui/core";
 import PartyInfoCard from "../components/PartyInfoCard";
 import {
   BrowserRouter as Router,
@@ -23,7 +23,9 @@ function ListView(props) {
   }, []);
   return (
     <div>
-      <h1>listView</h1>
+      <Typography variant="h1" color="textPrimary">
+        listView
+      </Typography>
       <Grid container align="center" spacing={3}>
         {parties.length &&
           parties.map((party) => (

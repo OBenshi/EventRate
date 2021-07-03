@@ -59,7 +59,13 @@ router.get("/all", (req, res) => {
 router.get("/:partyName", (req, res) => {
   partiesModel
     .find({ name: req.params.partyName })
-    .populate({ path: "reviews", populate: { path: "user", select: ["name"] } })
+    .populate({
+      path: "reviews",
+      populate: {
+        path: "user",
+        select: ["_id", "firstName", "lastName", "username"],
+      },
+    })
     .populate({ path: "organizers", select: ["name"] })
     .then((parties) => {
       res.send(parties);

@@ -20,11 +20,13 @@ import {
   useRouteMatch,
 } from "react-router-dom";
 import { useStyles } from "./Toolbox/cssTheme";
+import { useParty } from "../Contexts/PartyContext";
 
 export default function PartyInfoCard(props) {
   const party = props.party;
   const classes = useStyles();
   const [averagePopularity, setAveragePopularity] = useState(0);
+  const { refresh, setRefresh } = useParty();
 
   const calcPartyRating = (party) => {
     const initialVals = { avg: 0, n: 0 };
@@ -33,7 +35,7 @@ export default function PartyInfoCard(props) {
   };
   useEffect(() => {
     calcPartyRating(party);
-  }, []);
+  }, [refresh]);
   return (
     <Card
       className={`${classes.partyCard} ${classes.cork}`}
@@ -47,13 +49,13 @@ export default function PartyInfoCard(props) {
         />
         <CardContent>
           <Link to={`/parties/${party.name}`}>
-            <Typography gutterBottom variant="h5" component="h3">
+            <Typography gutterBottom variant="h5">
               {party.name}
             </Typography>
           </Link>
           <h1>{averagePopularity && averagePopularity}</h1>
           {party.description && (
-            <Typography variant="body2" color="textSecondary" component="p">
+            <Typography variant="body2" color="textPrimary">
               {`${party.description.substring(0, 150)}...`}
             </Typography>
           )}

@@ -6,7 +6,6 @@ export const webColors = [
   "Azure",
   "Beige",
   "Bisque",
-  "Black",
   "BlanchedAlmond",
   "Blue",
   "BlueViolet",

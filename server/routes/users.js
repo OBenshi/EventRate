@@ -39,7 +39,13 @@ const router = express.Router();
 //*------------------------SECTION TEST ROUTE ------------------------------- */
 
 router.get("/test", (req, res) => {
-  res.send({ msg: process.env.MY_TRY });
+  // res.send({ msg: process.env.MY_TRY });
+  userModel
+    .updateMany({}, { $set: { loggedIn: false } })
+    .then((users) => {
+      res.send(users);
+    })
+    .catch((err) => res.send(err));
 });
 //* ----------------------- END §SECTION TEST ROUTE -------------------------- */
 
@@ -170,10 +176,24 @@ router.post("/login", (req, res) => {
         }
       });
     }
+    if (user) {
+      user.loggedIn = true;
+      user.save();
+    }
   });
 });
 
 //* --------------------------- END §SECTION LOGIN --------------------------- */
+
+//* ------------------------------ SECTION LOGOUT ----------------------------- */
+
+router.get("/logout", (req, res) => {
+  userModel
+    .findOneAndUpdate({ _id: req.body._id }, { $set: { loggedIn: false } })
+    .then((user) => res.send(user));
+});
+
+//* --------------------------- END §SECTION LOGOUT -------------------------- */
 //* ------------------------ END §SECTION POST ROUTES ------------------------ */
 //* --------------------------- END §SECTION ROUTES -------------------------- */
 

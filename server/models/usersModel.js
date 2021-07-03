@@ -42,6 +42,10 @@ const userSchema = new mongoose.Schema({
   own_parties: {
     type: [{ type: mongoose.Schema.Types.ObjectId, ref: "party" }],
   },
+  loggedIn: {
+    type: Boolean,
+    // required: true,
+  },
   // reviews: {
   //   type: [
   //     {

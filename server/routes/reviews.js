@@ -16,7 +16,7 @@
 
 /* -------------------------------------------------------------------------- */
 //*       ======================================================              //
-//*       ======================= IMPORTS ======================              //
+//        =============== SECTION IMPORTS ======================              //
 //*       ======================================================              //
 
 const express = require("express");
@@ -26,21 +26,24 @@ const reviewModel = require("../models/reviewsModel");
 const router = express.Router();
 const usersModel = require("../models/usersModel");
 
-/* -------------------------------------------------------------------------- */
+//*-------------------------- END §SECTION IMPORTS -------------------------- */
+
 //        ======================================================              //
-//*       =======================  ROUTES ======================              //
+//*       =============== SECTION  ROUTES ======================              //
 //        ======================================================              //
 /* -------------------------------------------------------------------------- */
-//*                                GET ROUTES                                 */
+//*                        SECTION GET ROUTES                                 */
 /* -------------------------------------------------------------------------- */
 
-//*------------------------------- TEST ROUTE ------------------------------- */
+//*----------------------- SECTION TEST ROUTE ------------------------------- */
 
 router.get("/test", (req, res) => {
   res.send({ msg: 123 });
 });
 
-//*----------------------------- GET ALL Reviews ---------------------------- */
+//*------------------------- END §SECTION TEST ROUTE ------------------------ */
+
+//*--------------------- SECTION GET ALL Reviews ---------------------------- */
 
 router.get("/all", (req, res) => {
   reviewModel
@@ -59,19 +62,22 @@ router.get("/all", (req, res) => {
     .catch((err) => res.send(err));
 });
 
+//*----------------------- END §SECTION GET ALL Review ---------------------- */
+//*------------------------- END §SECTION GET ROUTES ------------------------ */
+
 /* -------------------------------------------------------------------------- */
-//*                                POST ROUTES                                */
+//*                        SECTION POST ROUTES                                */
 /* -------------------------------------------------------------------------- */
 
-//*-------------------------------- NEW Review ------------------------------ */
+//*------------------------ SECTION NEW Review ------------------------------ */
 
 router.post(
   "/new",
   passport.authenticate("jwt", { session: false }),
   (req, res) => {
     //TODO protected route
-    // console.log(req.body);
-    const reqUserId = req.body.userId;
+    console.log("userId", req.body.user);
+    const reqUser = req.body.user;
     const reqParty = req.body.party;
     const reqDate = req.body.date;
     const reqRating = req.body.rating || 1;
@@ -79,7 +85,7 @@ router.post(
 
     //? CREATING A Review
     const newReview = new reviewModel({
-      user: reqUserId,
+      user: reqUser,
       party: reqParty,
       date: reqDate,
       rating: reqRating,
@@ -130,11 +136,40 @@ router.post(
   }
 );
 
+//*------------------------- END §SECTION NEW Review ------------------------ */
+
+//*--------------------------- SECTION EDIT Review -------------------------- */
+
+router.post(
+  "/edit",
+  passport.authenticate("jwt", { session: false }),
+  (req, res) => {
+    console.log(`req.body.rating`, req.body.rating);
+    reviewModel.findById(req.body._id).then((review) => {
+      console.log(review.user.equals(req.user._id));
+      console.log(review.user === req.user._id);
+      if (review.user.equals(req.user._id)) {
+        const review = reviewModel
+          .findOneAndUpdate(
+            { _id: req.body._id },
+            { $set: { text: req.body.text, rating: req.body.rating } },
+            { useFindAndModify: false }
+          )
+          .catch((err) => res.send(err));
+      }
+    });
+  }
+);
+
+//*---------------------- END §SECTION EDIT Review -------------------------- */
+//*------------------------ END §SECTION POST ROUTES ------------------------ */
+//*--------------------------- END §SECTION ROUTES -------------------------- */
+
 /* -------------------------------------------------------------------------- */
 //       ====================================================== //
-//*      ======================= EXPORT ======================= //
+//*      =============== SECTION EXPORT ======================= //
 //       ====================================================== //
 
 module.exports = router;
 
-/* -------------------------------------------------------------------------- */
+//*--------------------------- END §SECTION EXPORT -------------------------- */

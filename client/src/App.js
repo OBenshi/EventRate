@@ -17,6 +17,7 @@ import { AuthProvider } from "./Contexts/AuthContext";
 import { PartyProvider } from "./Contexts/PartyContext";
 import { CssBaseline, ThemeProvider } from "@material-ui/core";
 import { theme } from "./components/Toolbox/cssTheme";
+import PrivateRoute from "./components/PrivateRoute.js";
 function App() {
   return (
     <div>
@@ -27,8 +28,11 @@ function App() {
             <Router>
               <PrimaryAppBar />
               <Switch>
-                <Route exact path="/" children={<Home />} />
+                {" "}
                 <PartyProvider>
+                  <Route exact path="/" children={<Home />} />{" "}
+                  <Route exact path="/signin" children={<SignIn />} />
+                  <Route exact path="/signup" children={<SignUp />} />
                   <Route exact path="/testing" children={<Trulolo />} />
                   <Route exact path="/parties" children={<ListView />} />
                   <Route
@@ -36,12 +40,17 @@ function App() {
                     path="/parties/:partyName"
                     children={<EventDetailView />}
                   />
+                  <PrivateRoute
+                    exact
+                    path="/dashboard"
+                    children={<Dashboard />}
+                  />
+                  <PrivateRoute
+                    exact
+                    path="/submitevent"
+                    children={<SubmitEvent />}
+                  />
                 </PartyProvider>
-                <Route exact path="/signin" children={<SignIn />} />
-                <Route exact path="/signup" children={<SignUp />} />
-                <Route exact path="/dashboard" children={<Dashboard />} />
-
-                <Route exact path="/submitevent" children={<SubmitEvent />} />
               </Switch>
             </Router>
           </MuiPickersUtilsProvider>

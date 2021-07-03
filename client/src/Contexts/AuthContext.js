@@ -27,14 +27,21 @@ export function AuthProvider({ children }) {
         .then((data) => {
           console.log("I'm data from AuthContext", data[0]);
           setUserInfo(data[0]);
-          setIsUser(true);
+          //setIsUser(true);
         });
+    }
+  };
+
+  const isUserLoggedIn = () => {
+    if (token !== null) {
+      setIsUser(true);
     }
   };
 
   useEffect(() => {
     getUserInfo();
-  }, []);
-  const value = { token, userInfo, isUser };
+    isUserLoggedIn();
+  }, [token]);
+  const value = { token, userInfo, setUserInfo, isUser, setIsUser };
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }

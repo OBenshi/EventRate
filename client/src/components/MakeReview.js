@@ -59,7 +59,7 @@ export default function MakeReview(props) {
   const classes = useStyles();
   const theme = useTheme();
   const [open, setOpen] = React.useState(false);
-  console.log(isUser);
+  // console.log(isUser);
   const handleDrawerOpen = () => {
     setOpen(true);
   };
@@ -71,7 +71,7 @@ export default function MakeReview(props) {
     event.preventDefault();
     const postDate = new Date(Date.now());
     const newReview = {
-      userId: userInfo._id,
+      user: userInfo._id,
       party: party._id,
       date: postDate.toISOString(),
       rating: rating,
@@ -104,7 +104,7 @@ export default function MakeReview(props) {
         <Grid container alignItems="center" align="center">
           <Grid item xs={6}>
             <Typography variant="h6" noWrap>
-              Leave a Review&nbsp;
+              Leave a Review&nbsp;{isUser === true && typeof userInfo._id}
             </Typography>
           </Grid>
           <Grid item xs={6} align="center">

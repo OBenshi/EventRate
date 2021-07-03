@@ -19,6 +19,7 @@ export const useStyles = makeStyles((theme) => ({
   },
   NavRoot: {
     flexGrow: 1,
+    marginBottom: theme.spacing(7),
   },
   menuButton: {
     marginRight: theme.spacing(2),
@@ -104,8 +105,9 @@ export const useStyles = makeStyles((theme) => ({
   },
   cork: {
     backgroundSize: "cover",
-    backgroundRepeat: "no-repeat",
+    backgroundRepeat: "no-repeat repeat",
     backgroundImage: `url(${cork})`,
+    borderRadius: "1%",
   },
   root: {
     display: "flex",
@@ -160,5 +162,18 @@ export const useStyles = makeStyles((theme) => ({
       duration: theme.transitions.duration.enteringScreen,
     }),
     marginLeft: 0,
+  },
+  ReviewBox: {
+    padding: theme.spacing(3),
+    marginTop: theme.spacing(1),
+  },
+  partyInfo: {
+    // display: "flex",
+    // flexDirection: "column",
+    // justifyContent: "center",
+    // alignItems: "center",
+  },
+  reviewEditText: {
+    width: "100%",
   },
 }));

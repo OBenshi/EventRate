@@ -12,20 +12,13 @@ import {
   Drawer,
   Grid,
   List,
+  useScrollTrigger,
 } from "@material-ui/core";
 import InboxIcon from "@material-ui/icons/MoveToInbox";
 import FavoriteIcon from "@material-ui/icons/Favorite";
-// import AppBar from "@material-ui/core/AppBar";
-// import Toolbar from "@material-ui/core/Toolbar";
-// import IconButton from "@material-ui/core/IconButton";
-// import Typography from "@material-ui/core/Typography";
-// import InputBase from "@material-ui/core/InputBase";
 import { fade, makeStyles } from "@material-ui/core/styles";
 import MenuIcon from "@material-ui/icons/Menu";
 import SearchIcon from "@material-ui/icons/Search";
-// import Divider from "@material-ui/core/Divider";
-// import ListItemIcon from "@material-ui/core/ListItemIcon";
-// import ListItemText from "@material-ui/core/ListItemText";
 import {
   BrowserRouter as Router,
   Route,
@@ -37,12 +30,29 @@ import {
   useRouteMatch,
 } from "react-router-dom";
 import { useStyles } from "./Toolbox/cssTheme";
+import { useAuth } from "../Contexts/AuthContext";
 
-export default function PrimaryAppBar() {
+export default function PrimaryAppBar(props) {
   const classes = useStyles();
+  const { isUser, setIsUser, token, userInfo, setUserInfo } = useAuth();
+  console.log(`isUser`, isUser);
   let { path, url } = useRouteMatch();
   const history = useHistory();
   const [drawerState, setDrawerState] = useState(false);
+
+  const handleLogout = () => {
+    const request = { method: "post", body: { _id: userInfo._id } };
+    fetch("/users/logout", request)
+      .then((response) => {
+        setUserInfo([]);
+        setIsUser(false);
+        window.localStorage.removeItem("token");
+        // history.push("/");
+        window.location.reload();
+        console.log(response);
+      })
+      .catch((error) => console.error(error));
+  };
 
   const toggleDrawer = (open) => (event) => {
     if (
@@ -78,22 +88,26 @@ export default function PrimaryAppBar() {
             <ListItemText primary={"parties"} />
           </ListItem>{" "}
         </NavLink>
-        <NavLink to="/signup">
-          <ListItem button key={"signup"}>
-            <ListItemIcon>
-              <InboxIcon />
-            </ListItemIcon>
-            <ListItemText primary={"Sign up"} />
-          </ListItem>{" "}
-        </NavLink>
-        <Link to="/signin">
-          <ListItem button key={"signin"}>
-            <ListItemIcon>
-              <InboxIcon />
-            </ListItemIcon>
-            <ListItemText primary={"Sign in"} />
-          </ListItem>{" "}
-        </Link>
+        {!isUser && (
+          <NavLink to="/signup">
+            <ListItem button key={"signup"}>
+              <ListItemIcon>
+                <InboxIcon />
+              </ListItemIcon>
+              <ListItemText primary={"Sign up"} />
+            </ListItem>
+          </NavLink>
+        )}
+        {!isUser && (
+          <Link to="/signin">
+            <ListItem button key={"signin"}>
+              <ListItemIcon>
+                <InboxIcon />
+              </ListItemIcon>
+              <ListItemText primary={"Sign in"} />
+            </ListItem>{" "}
+          </Link>
+        )}
       </List>
 
       <Divider />
@@ -115,67 +129,97 @@ export default function PrimaryAppBar() {
             <ListItemText primary={"Manage profile"} />
           </ListItem>
         </NavLink>
-        <ListItem
-          button
-          key={"logout"}
-          onClick={() => console.log("logged out")}
-        >
-          <ListItemIcon>
-            <InboxIcon />
-          </ListItemIcon>
-          <ListItemText primary={"Logout"} />
+        {isUser && (
+          <Link to="/submitevent">
+            <ListItem button key={"SubmitAParty"}>
+              <ListItemIcon>
+                <InboxIcon />
+              </ListItemIcon>
+              <ListItemText primary={"Submit a Party"} />
+            </ListItem>{" "}
+          </Link>
+        )}
+        <ListItem>
+          <ListItemText primary={`${isUser},${userInfo.username}`} />{" "}
         </ListItem>
+        {isUser && (
+          <ListItem button key={"logout"} onClick={handleLogout}>
+            <ListItemIcon>
+              <InboxIcon />
+            </ListItemIcon>
+            <ListItemText primary={"Logout"} />
+          </ListItem>
+        )}
       </List>
     </div>
   );
+
+  function ElevationScroll(props) {
+    const { children, window } = props;
+    // Note that you normally won't need to set the window ref as useScrollTrigger
+    // will default to window.
+    // This is only being set here because the demo is in an iframe.
+    const trigger = useScrollTrigger({
+      disableHysteresis: true,
+      threshold: 0,
+      target: window ? window() : undefined,
+    });
+
+    return React.cloneElement(children, {
+      elevation: trigger ? 4 : 0,
+    });
+  }
+
   useEffect(() => {
-    console.log(path);
+    console.log(userInfo);
   }, []);
   return (
     <div className={classes.NavRoot}>
-      <AppBar position="static">
-        <Toolbar>
-          <IconButton
-            edge="start"
-            className={classes.menuButton}
-            color="inherit"
-            aria-label="open drawer"
-            onClick={toggleDrawer(true)}
-          >
-            <MenuIcon />
-          </IconButton>{" "}
-          <Drawer
-            anchor={"left"}
-            open={drawerState}
-            onClose={toggleDrawer(false)}
-            // className={classes.drawerList}
-            elevation={16}
-          >
-            <Typography variant="h6" align="center" noWrap color="primary">
-              EventRate
+      <ElevationScroll {...props}>
+        <AppBar position="fixed">
+          <Toolbar>
+            <IconButton
+              edge="start"
+              className={classes.menuButton}
+              color="inherit"
+              aria-label="open drawer"
+              onClick={toggleDrawer(true)}
+            >
+              <MenuIcon />
+            </IconButton>{" "}
+            <Drawer
+              anchor={"left"}
+              open={drawerState}
+              onClose={toggleDrawer(false)}
+              // className={classes.drawerList}
+              elevation={16}
+            >
+              <Typography variant="h6" align="center" noWrap color="primary">
+                EventRate
+              </Typography>
+              {list()}
+            </Drawer>
+            <Typography className={classes.title} variant="h6" noWrap>
+              Material-UI
             </Typography>
-            {list()}
-          </Drawer>
-          <Typography className={classes.title} variant="h6" noWrap>
-            Material-UI
-          </Typography>
-          {history.location.pathname === "/parties" && (
-            <div className={classes.search}>
-              <div className={classes.searchIcon}>
-                <SearchIcon />
+            {history.location.pathname === "/parties" && (
+              <div className={classes.search}>
+                <div className={classes.searchIcon}>
+                  <SearchIcon />
+                </div>
+                <InputBase
+                  placeholder="Find a party…"
+                  classes={{
+                    root: classes.inputRoot,
+                    input: classes.inputInput,
+                  }}
+                  inputProps={{ "aria-label": "search" }}
+                />
               </div>
-              <InputBase
-                placeholder="Find a party…"
-                classes={{
-                  root: classes.inputRoot,
-                  input: classes.inputInput,
-                }}
-                inputProps={{ "aria-label": "search" }}
-              />
-            </div>
-          )}
-        </Toolbar>
-      </AppBar>
+            )}
+          </Toolbar>
+        </AppBar>
+      </ElevationScroll>
     </div>
   );
 }

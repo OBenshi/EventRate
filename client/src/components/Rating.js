@@ -22,7 +22,6 @@ export function CustomizedRatings() {
       getLabelText={(value) => `${value} Heart${value !== 1 ? "s" : ""}`}
       precision={0.5}
       icon={<FavoriteIcon fontSize="default" />}
-      //   readOnly={true}
       onChange={(event) => console.log(event.target.value)}
     />
   );
