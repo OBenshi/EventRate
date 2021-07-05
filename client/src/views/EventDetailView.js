@@ -14,11 +14,13 @@ import ReviewBox from "../components/ReviewBox";
 import MakeReview from "../components/MakeReview";
 import { useAuth } from "../Contexts/AuthContext";
 import { useParty } from "../Contexts/PartyContext";
+import { randomColor } from "../components/Toolbox/Toolbox";
 function EventDetailView(params) {
   const { refresh, setRefresh } = useParty();
   const { partyName } = useParams();
   const classes = useStyles();
   const [party, setParty] = useState({});
+  const [partyDate, setPartyDate] = useState(null);
   const [reviews, setReviews] = useState();
   const { isUser } = useAuth();
   console.log(`isUser`, isUser);
@@ -28,16 +30,22 @@ function EventDetailView(params) {
       .then((data) => {
         setReviews(data[0].reviews);
         setParty(data[0]);
+        setPartyDate(new Date(data[0].date));
       });
   }, [refresh]);
   return (
     <div>
-      {console.log(888888888888888888888888, reviews)}
+      {/* {console.log(888888888888888888888888, reviews)} */}
       {/* <Paper elevation={8}> */}
       <Grid container justify="center" className={classes.cork}>
         <Grid item xs={12}>
           <Typography align="center" variant="h2" variantMapping={{ h2: "h1" }}>
             {party.name}
+          </Typography>
+          <br />
+          <Typography variant="h3" align="center">
+            {partyDate &&
+              `${partyDate.toDateString()},${partyDate.getHours()}:${partyDate.getMinutes()}`}
           </Typography>
         </Grid>
         {party.img && (
@@ -48,6 +56,13 @@ function EventDetailView(params) {
                 src={party.img}
                 alt={party.name}
               />
+            </Paper>
+          </Grid>
+        )}{" "}
+        {party.description && (
+          <Grid item xs={10}>
+            <Paper elevation={3} style={{ backgroundColor: `${randomColor}` }}>
+              <Typography>{party.description}</Typography>
             </Paper>
           </Grid>
         )}
@@ -80,7 +95,6 @@ function EventDetailView(params) {
             </Paper>
           </Grid>
         )}
-
         <Grid item xs={12}>
           <Paper elevation={3} className={classes.postIt}>
             {" "}
@@ -102,8 +116,9 @@ function EventDetailView(params) {
             return 0;
           })
           .map((review) => {
-            console.log(review.user);
-            return <ReviewBox review={review} key={review._id} />;
+            if (review.display === true) {
+              return <ReviewBox review={review} key={review._id} />;
+            }
           })
       ) : (
         <p>no reviews</p>

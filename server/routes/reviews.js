@@ -162,6 +162,32 @@ router.post(
 );
 
 //*---------------------- END §SECTION EDIT Review -------------------------- */
+
+//*-------------------------- SECTION DELETE Review ------------------------- */
+
+router.post(
+  "/delete",
+  passport.authenticate("jwt", { session: false }),
+  (req, res) => {
+    console.log(`req.body.rating`, req.body.rating);
+    reviewModel.findById(req.body._id).then((review) => {
+      // console.log(review.user.equals(req.user._id));
+      // console.log(review.user === req.user._id);
+      if (review.user.equals(req.user._id)) {
+        const review = reviewModel
+          .findOneAndUpdate(
+            { _id: req.body._id },
+            { $set: { display: false } },
+            { useFindAndModify: false }
+          )
+          .catch((err) => res.send(err));
+      }
+    });
+  }
+);
+
+//*----------------------- END §SECTION DELETE Review ----------------------- */
+
 //*------------------------ END §SECTION POST ROUTES ------------------------ */
 //*--------------------------- END §SECTION ROUTES -------------------------- */
 

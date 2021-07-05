@@ -11,12 +11,17 @@ import { withStyles } from "@material-ui/core/styles";
 import React, { useEffect, useState, useRef } from "react";
 import { useStyles } from "./Toolbox/cssTheme";
 import { webColors } from "./Toolbox/webcolors";
+// import { randomColor } from "./Toolbox/Toolbox";
 import Rating from "@material-ui/lab/Rating";
 import FavoriteIcon from "@material-ui/icons/Favorite";
 import { useAuth } from "../Contexts/AuthContext";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faEdit } from "@fortawesome/free-solid-svg-icons";
-import { faPaperPlane } from "@fortawesome/free-solid-svg-icons";
+import {
+  faEdit,
+  faPaperPlane,
+  faTrashAlt,
+} from "@fortawesome/free-solid-svg-icons";
+// import { faPaperPlane } from "@fortawesome/free-solid-svg-icons";
 import { useParty } from "../Contexts/PartyContext";
 const ReviewBox = (props) => {
   const classes = useStyles();
@@ -42,13 +47,11 @@ const ReviewBox = (props) => {
   })(Rating);
 
   const handleEdit = () => {
-    setEditMode(true);
+    setEditMode(!editMode);
   };
 
   const handleEditSubmit = (event) => {
     event.preventDefault();
-    console.log(`rating`, rating);
-    // const postDate = new Date(Date.now());
     const editedReview = {
       _id: review._id,
       rating: rating,
@@ -61,6 +64,31 @@ const ReviewBox = (props) => {
         Authorization: "Bearer " + token,
       },
       body: JSON.stringify(editedReview),
+    })
+      .then((res) => res.json())
+      .then((things) => {
+        console.log(things);
+        // setRefresh(!refresh);
+      })
+      .then(setEditMode(false))
+      .then(setRefresh(!refresh))
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
+  const handleDelete = (event) => {
+    event.preventDefault();
+    const reviewToDelete = {
+      _id: review._id,
+    };
+    fetch("http://localhost:5000/reviews/delete", {
+      method: "post",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + token,
+      },
+      body: JSON.stringify(reviewToDelete),
     })
       .then((res) => res.json())
       .then((things) => {
@@ -114,17 +142,6 @@ const ReviewBox = (props) => {
                   setRating(event.target.value);
                 }}
                 readOnly={!editMode}
-                // name="partyRating"
-                // ref={ratingRef}
-                // defaultValue={review.rating}
-                // getLabelText={(value) =>
-                //   `${value} Heart${value !== 1 ? "s" : ""}`
-                // }
-                // precision={0.5}
-                // icon={<FavoriteIcon fontSize="default" />}
-                // readOnly={!editMode}
-                // // onValueChange={(e) => console.log(e.target.value)}
-                // onChange={handleChange}
               />
             </Grid>
           </Grid>
@@ -146,20 +163,13 @@ const ReviewBox = (props) => {
               onChange={(event) => setReviewText(event.target.value)}
               defaultValue={review.text}
             />
-            // <TextField
-            //   id="reviewTextarea"
-            //   label="Review Text"
-            //   className={classes.reviewEditText}
-            //   aria-label="review"
-            //   fullWidth={true}
-            //   inputRef={textRef}
-            //   onChange={console.log("change!")}
-            //   defaultValue={review.text}
-            // />
           )}
         </Grid>
         {ownComment && (
-          <Grid item xs={12} align="right" justify="space-between">
+          <Grid item xs={12} align="right">
+            <IconButton aria-label="delete" onClick={handleDelete}>
+              <FontAwesomeIcon icon={faTrashAlt} />
+            </IconButton>
             <IconButton aria-label="edit" onClick={handleEdit}>
               <FontAwesomeIcon icon={faEdit} />
             </IconButton>

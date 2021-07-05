@@ -4,29 +4,31 @@ import { useStyles } from "./Toolbox/cssTheme";
 import { useAuth } from "../Contexts/AuthContext";
 import { useParty } from "../Contexts/PartyContext";
 
-const DjList = () => {
+const GenreList = () => {
   const classes = useStyles();
   const { userInfo } = useAuth();
-  const { djs, setDjs } = useParty();
+  const { musicalGenres, setMusicalGenres } = useParty();
 
-  const handleDelete = (djToDelete) => () => {
-    setDjs((chips) => chips.filter((dj) => dj !== djToDelete));
+  const handleDelete = (GenreToDelete) => () => {
+    setMusicalGenres((chips) =>
+      chips.filter((genre) => genre !== GenreToDelete)
+    );
   };
 
-  useEffect(() => {}, [djs]);
+  useEffect(() => {}, [musicalGenres]);
   return (
     <div>
       <Paper elevation={3} className={classes.pinkPostIt}>
         <Typography align="center" variant="h4">
-          Dj's
+          Musical Genres
         </Typography>
         <ul>
-          {djs.map((dj) => (
-            <li key={`${userInfo._id},${dj}`}>
+          {musicalGenres.map((genre) => (
+            <li key={`${userInfo._id},${genre}`}>
               <Chip
                 // icon={icon}
-                label={dj}
-                onDelete={handleDelete(dj)}
+                label={genre}
+                onDelete={handleDelete(genre)}
                 className={classes.chip}
               />
             </li>
@@ -37,4 +39,4 @@ const DjList = () => {
   );
 };
 
-export default DjList;
+export default GenreList;

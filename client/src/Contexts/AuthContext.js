@@ -28,6 +28,9 @@ export function AuthProvider({ children }) {
           console.log("I'm data from AuthContext", data[0]);
           setUserInfo(data[0]);
           //setIsUser(true);
+        })
+        .catch((err) => {
+          console.log(err);
         });
     }
   };

@@ -117,7 +117,7 @@ router.post(
                 res.send(party);
               })
               .catch((err) => {
-                res.send(err);
+                res.json({ error: err });
               });
           }
         }

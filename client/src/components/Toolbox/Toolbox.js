@@ -1,13 +1,9 @@
-// const CalcPartyRating = (party) => {
-//     if (!party.reviews) { return 0 } else {
-//         const userRatings=[]
-//     party.reviews.forEach(review => {
-//         userRatings.push(review.rating)
+import { webColors } from "./webcolors";
 
-//     });
-// }}
+export const randomColor =
+  webColors[Math.floor(Math.random() * webColors.length)];
 
-const averageScores = ({ avg, n }, reviews) => {
+export const averageScores = ({ avg, n }, reviews) => {
   if (!reviews.rating) {
     return { avg, n };
   }
@@ -17,4 +13,4 @@ const averageScores = ({ avg, n }, reviews) => {
   };
 };
 
-export { averageScores };
+// export { averageScores, randomColor };

@@ -29,63 +29,111 @@ import { faPlusSquare } from "@fortawesome/free-solid-svg-icons";
 import { useAuth } from "../Contexts/AuthContext";
 import { useParty } from "../Contexts/PartyContext";
 import DjsList from "../components/DjList";
+import GenreList from "../components/GenreList";
+import { DateTimePicker } from "@material-ui/pickers";
 
 function SubmitEvent() {
   const classes = useStyles();
-  const { isUser, userInfo } = useAuth();
-  const { djs, setDjs } = useParty();
+  const { isUser, userInfo, token } = useAuth();
+  const { djs, setDjs, musicalGenres, setMusicalGenres } = useParty();
+  // setDjs([]);
   const djRef = useRef();
   const [image, setImage] = useState("");
   const [imgUrl, setImgUrl] = useState("");
   const descriptionRef = useRef();
   const locationRef = useRef();
-  const dateRef = useRef();
+  const partyDateRef = useRef();
+  const [selectedDate, handleDateChange] = useState(new Date());
   //TODO const[musicalGenres,setMusicalGenres] = useState([])
   const musicalGenreRef = useRef();
+  // const [musicalGenres, setMusicalGenres] = useParty();
   const nameRef = useRef();
 
-  const postParty = (event) => {
+  const handleSubmit = (event) => {
     event.preventDefault();
-    const data = new FormData();
-    data.append("file", image);
-    data.append("upload_preset", "eventRate");
-    data.append("cloud_name", "eventrate");
-
-    fetch("https://api.cloudinary.com/v1_1/eventrate/image/upload", {
-      method: "POST",
-      body: data,
+    //  await postPartyImg();
+    console.log(`selectedDate`, selectedDate.toISOString());
+    // if (imgUrl) {
+    const postDate = new Date(Date.now());
+    const newParty = {
+      name: nameRef.current.value,
+      location: locationRef.current.value,
+      Djs: djs,
+      musical_genre: musicalGenres,
+      rating: 0,
+      img: imgUrl,
+      description: descriptionRef.current.value,
+      reviews: [],
+      // TODO organizers (user)
+      organizers: [userInfo._id],
+      post_date: postDate.toISOString(),
+      date: selectedDate.toISOString(),
+    };
+    fetch("http://localhost:5000/parties/new", {
+      method: "post",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + token,
+      },
+      body: JSON.stringify(newParty),
     })
       .then((res) => res.json())
       .then((data) => {
-        setImgUrl(data.url);
+        console.log(`data`, data);
+        // if (!data.errors) {
+        //   localStorage.setItem("token", data.token);
+        //   setUserInfo(data.user);
+        //   history.push("/parties");
+        // } else {
+        //   data.errors.forEach((error) => {
+        //     if (error.param === "username") {
+        //       setUsernameError(error.msg);
+        //     } else if (error.param === "email") {
+        //       setEmailError(error.msg);
+        //     } else if (error.param === "password") {
+        //       setPasswordError(error.msg);
+        //     }
+        //   });
+        // }
       })
-      .catch((err) => console.error(err));
-  };
+      .catch((err) => {
+        // setLoading(false);
 
-  const handleSubmit = () => {
-    console.log(9);
+        // setOtherError(err);
+        console.log(err);
+      });
+
+    // setLoading(false);
+
+    // }
   };
-  //   useEffect(() => {
-  //     if (imgUrl) {
-  //       const postDate= new Date(Date.now())
-  //       const newParty = {
-  //             name: nameRef.current.value,
-  //         location: locationRef.current.value,
-  //             //TODO Djs array
-  //             Djs: req.body.Djs,
-  //             musical_genre: musicalGenreRef.current.value,
-  //             rating: 0,
-  //             img: imgUrl || "",
-  //             description: descriptionRef.current.value,
-  //         reviews: [],
-  //             //TODO organizers (user)
-  //             organizers: ,
-  //             post_date: postDate.toISOString(),
-  //             date: dateRef.current.value,
-  //       };
-  //     }
-  //   }
-  // ,[imgUrl])
+  useEffect(() => {
+    // event.preventDefault();
+    if (image !== "") {
+      const data = new FormData();
+      data.append("file", image);
+      data.append("upload_preset", "eventRate");
+      data.append("cloud_name", "eventrate");
+
+      fetch("https://api.cloudinary.com/v1_1/eventrate/image/upload", {
+        method: "POST",
+        body: data,
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          console.log("pic data", data);
+          setImgUrl(data.url);
+        })
+        .catch((err) => console.error(err));
+    }
+  }, [image]);
+
+  useEffect(() => {
+    setDjs([]);
+    setMusicalGenres([]);
+  }, []);
+
+  // getImgURL
   return (
     <div>
       <Grid container className={classes.cork}>
@@ -93,7 +141,16 @@ function SubmitEvent() {
           SUBMIT A PARTY
         </Typography>
         <form className={classes.form} noValidate>
-          {/*   name:location:Djs:musical_genre:rating:img:description:reviews:organizers:post_date:date: */}
+          <TextField
+            id="partyName"
+            inputRef={nameRef}
+            label="Party name"
+            placeholder="Party name"
+            // multiline
+            rows="1"
+            fullWidth
+            variant="outlined"
+          />{" "}
           <TextField
             id="partyDescription"
             inputRef={descriptionRef}
@@ -103,7 +160,7 @@ function SubmitEvent() {
             rows="10"
             fullWidth
             variant="outlined"
-          />{" "}
+          />
           <TextField
             id="partyLocation"
             inputRef={locationRef}
@@ -113,55 +170,85 @@ function SubmitEvent() {
             // fullWidth
             variant="outlined"
           />
-          <Grid container xs={12}>
-            <TextField
-              id="musicalGenre"
-              inputRef={musicalGenreRef}
-              label="musical genre"
-              placeholder="Musical Genre"
-              rows="1"
-              variant="outlined"
-            ></TextField>
+          <Grid container direction="row" justify="center">
+            <Grid item>
+              <TextField
+                // id="djInput"
+                inputRef={musicalGenreRef}
+                label="Musical Genres"
+                placeholder="Techno,House,Polka etc..."
+                rows="1"
+                variant="outlined"
+              />
+              <IconButton
+                // aria-label="open drawer"
+                onClick={() => {
+                  // console.log(djRef.current.value);
+                  setMusicalGenres([
+                    ...musicalGenres,
+                    musicalGenreRef.current.value,
+                  ]);
+                  musicalGenreRef.current.value = "";
+                  // console.log(djs);
+                }}
+                // edge="start"
+              >
+                <FontAwesomeIcon icon={faPlusSquare} color="#ffffff" />
+              </IconButton>
+            </Grid>
+            <Grid item xs={6}>
+              <GenreList />
+            </Grid>
           </Grid>
-          <Grid container>
-            <TextField
-              // id="djInput"
-              inputRef={djRef}
-              label="dj"
-              placeholder="dj22"
-              rows="1"
-              variant="outlined"
-            />
-            <IconButton
-              // aria-label="open drawer"
-              onClick={() => {
-                console.log(djRef.current.value);
-                setDjs([...djs, djRef.current.value]);
-                djRef.current.value = "";
-                console.log(djs);
-              }}
-              // edge="start"
-            >
-              <FontAwesomeIcon icon={faPlusSquare} color="#ffffff" />
-            </IconButton>
-            <DjsList />
+          <Grid container direction="row" justify="center">
+            <Grid item>
+              <TextField
+                // id="djInput"
+                inputRef={djRef}
+                label="Dj"
+                placeholder="Dj"
+                rows="1"
+                variant="outlined"
+              />
+              <IconButton
+                // aria-label="open drawer"
+                onClick={() => {
+                  console.log(djRef.current.value);
+                  setDjs([...djs, djRef.current.value]);
+                  djRef.current.value = "";
+                  console.log(djs);
+                }}
+                // edge="start"
+              >
+                <FontAwesomeIcon icon={faPlusSquare} color="#ffffff" />
+              </IconButton>
+            </Grid>
+            <Grid item xs={6}>
+              <DjsList />
+            </Grid>
           </Grid>
-          {/* <DatePicker
-            disableFuture
+          <DateTimePicker
+            disablePast
             variant="outlined"
             fullWidth
-            id="birthdate"
-            inputRef={birthdayRef}
-            openTo="year"
-            format="dd/MM/yyyy"
-            label="Date of birth"
-            views={["year", "month", "date"]}
+            // id="birthdate"
+            inputRef={partyDateRef}
+            // openTo="year"
+            // format="dd/MM/yyyy"
+            label="Party Date"
+            // views={["year", "month", "date", "time"]}
             value={selectedDate}
             onChange={handleDateChange}
-          /> */}
+          />
           <Paper style={{ padding: 5, margin: 5 }}>
             <label forhtml="image">Upload Image</label>
-            <input type="file" onChange={(e) => setImage(e.target.files[0])} />
+            <input
+              type="file"
+              onChange={(e) => {
+                setImage(e.target.files[0]);
+                // postPartyImg();
+              }}
+            />
           </Paper>
           <Button
             type="submit"
@@ -169,10 +256,10 @@ function SubmitEvent() {
             variant="contained"
             color="primary"
             className={classes.submit}
-            // onClick={postParty}
+            onClick={handleSubmit}
             // disabled={loading}
           >
-            Sign Up
+            Submit Party
           </Button>
         </form>
       </Grid>

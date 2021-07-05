@@ -105,7 +105,7 @@ export const useStyles = makeStyles((theme) => ({
   },
   cork: {
     backgroundSize: "cover",
-    backgroundRepeat: "no-repeat repeat",
+    backgroundRepeat: "repeat",
     backgroundImage: `url(${cork})`,
     borderRadius: "1%",
   },

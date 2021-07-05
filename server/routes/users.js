@@ -19,13 +19,21 @@
 //*       =============== SECTION IMPORTS ======================              //
 //*       ======================================================              //
 
+//* server imports
 const express = require("express");
+const router = express.Router();
+
+//*security imports
 const bcrypt = require("bcrypt");
 const secretOrKey = require("../config.js").secretOrKey;
-var jwt = require("jsonwebtoken");
+const jwt = require("jsonwebtoken");
 const passport = require("passport");
+const { body, validationResult } = require("express-validator");
+
+//*models import
 const userModel = require("../models/usersModel");
-const router = express.Router();
+const partiesModel = require("../models/partiesModel");
+const reviewModel = require("../models/reviewsModel");
 
 //* ----------------------- END §SECTION IMPORTS ---------------------------- */
 
@@ -40,8 +48,8 @@ const router = express.Router();
 
 router.get("/test", (req, res) => {
   // res.send({ msg: process.env.MY_TRY });
-  userModel
-    .updateMany({}, { $set: { loggedIn: false } })
+  reviewModel
+    .updateMany({}, { $set: { display: true } })
     .then((users) => {
       res.send(users);
     })
@@ -97,55 +105,65 @@ router.get(
 
 //*------------------------- SECTION SIGN-UP -------------------------------- */
 
-router.post("/signup", (req, res) => {
-  //TODO password and validation
-  //TODO error handling
-  console.log(req.body);
-  const reqEmail = req.body.email;
-  const reqUsername = req.body.username;
-  const reqPassword = req.body.password;
-  const reqFirstName = req.body.firstName;
-  const reqLastName = req.body.lastName;
-  const reqBirthday = req.body.birthday;
-  const reqReviews = req.body.reviews || [];
-  const reqOwnParties = req.body.ownParties || [];
+router.post(
+  "/signup",
+  body("username").isLength({ min: 3 }),
+  body("email").isEmail(),
+  body("password").isLength({ min: 8 }),
+  (req, res) => {
+    //TODO error handling
+    const reqEmail = req.body.email;
+    const reqUsername = req.body.username;
+    const reqPassword = req.body.password;
+    const reqFirstName = req.body.firstName;
+    const reqLastName = req.body.lastName;
+    const reqBirthday = req.body.birthday;
+    const reqReviews = req.body.reviews || [];
+    const reqOwnParties = req.body.ownParties || [];
 
-  userModel.findOne({ email: reqEmail }, (err, user) => {
-    if (err) {
-      res.json({ error: err });
-    }
-    if (user) {
-      res.send("Email is already used");
-    } else {
-      bcrypt.genSalt(10, (err, salt) => {
-        bcrypt.hash(reqPassword, salt, (err, hash) => {
-          const newUser = new userModel({
-            email: reqEmail,
-            username: reqUsername,
-            password: hash,
-            firstName: reqFirstName,
-            lastName: reqLastName,
-            birthday: reqBirthday,
-            reviews: reqReviews || [],
-            own_parties: reqOwnParties || [],
-          });
-          newUser
-            .save()
-            .then((user) => {
-              const options = {
-                id: user._id,
-              };
-              const token = jwt.sign(options, secretOrKey, { expiresIn: "8h" });
-              res.send({ user, token });
-            })
-            .catch((err) => {
-              res.json({ error: err });
+    userModel.findOne({ email: reqEmail }, (err, user) => {
+      if (err) {
+        res.json({ error: err });
+      }
+      if (user) {
+        res.send("Email is already used");
+      } else {
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+          return res.status(400).json({ errors: errors.array() });
+        }
+        bcrypt.genSalt(10, (err, salt) => {
+          bcrypt.hash(reqPassword, salt, (err, hash) => {
+            const newUser = new userModel({
+              email: reqEmail,
+              username: reqUsername,
+              password: hash,
+              firstName: reqFirstName,
+              lastName: reqLastName,
+              birthday: reqBirthday,
+              reviews: reqReviews || [],
+              own_parties: reqOwnParties || [],
             });
+            newUser
+              .save()
+              .then((user) => {
+                const options = {
+                  id: user._id,
+                };
+                const token = jwt.sign(options, secretOrKey, {
+                  expiresIn: "8h",
+                });
+                res.status(200).send({ user, token });
+              })
+              .catch((err) => {
+                res.status(500).json({ error: err });
+              });
+          });
         });
-      });
-    }
-  });
-});
+      }
+    });
+  }
+);
 
 //*-------------------------- END §SECTION SIGN - UP-------------------------- * /
 
@@ -156,11 +174,11 @@ router.post("/login", (req, res) => {
   const password = req.body.password;
   userModel.findOne({ email: email }, (err, user) => {
     if (err) {
-      res.send("Email does not exist");
+      res.json({ error: "Email does not exist" });
     } else {
       bcrypt.compare(password, user.password, (err, result) => {
         if (err) {
-          res.send(err);
+          res.json({ error: err });
         }
         if (result) {
           const options = {
@@ -172,7 +190,7 @@ router.post("/login", (req, res) => {
             token: token,
           });
         } else {
-          res.send("password does not match");
+          res.json({ error: "password does not match" });
         }
       });
     }

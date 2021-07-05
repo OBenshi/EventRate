@@ -1,14 +1,30 @@
+//========================================================
+//
+//*  #####     ###    #####    ######  ##  #####   ####
+//*  ##  ##   ## ##   ##  ##     ##    ##  ##     ##
+//*  #####   ##   ##  #####      ##    ##  #####   ###
+//*  ##      #######  ##  ##     ##    ##  ##        ##
+//*  ##      ##   ##  ##   ##    ##    ##  #####  ####
+//
+//*  ###    ###   #####   ####    #####  ##
+//*  ## #  # ##  ##   ##  ##  ##  ##     ##
+//*  ##  ##  ##  ##   ##  ##  ##  #####  ##
+//*  ##      ##  ##   ##  ##  ##  ##     ##
+//*  ##      ##   #####   ####    #####  ######
+//
+//========================================================
+
+// ====================================================== //
+//*=================== SECTION IMPORTS ================== //
+// ====================================================== //
+
 const mongoose = require("mongoose");
-// const subReferencesPopulate = require("mongoose-sub-references-populate");
-// const ReviewSchema = new mongoose.Schema({
-//   _id: { type: mongoose.Schema.Types.ObjectId },
-//   user: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
-//   party: { type: mongoose.Schema.Types.ObjectId, ref: "Party" },
-//   date: { type: Date },
-//   rating: { type: Number },
-//   text: { type: String },
-// });
-// const ReviewModel = mongoose.model("Review", ReviewSchema);
+
+//*-------------------------- END §SECTION IMPORTS -------------------------- */
+
+// ====================================================== //
+//* ================ SECTION PARTY SCHEMA ================ //
+// ====================================================== //
 
 const partySchema = new mongoose.Schema({
   name: {
@@ -55,6 +71,18 @@ const partySchema = new mongoose.Schema({
     type: Date,
     required: true,
   },
+  display: {
+    type: Boolean,
+    required: true,
+  },
 });
 
+//*------------------------ END §SECTION PARTY SCHEMA ----------------------- */
+
+// ====================================================== //
+//* =================== SECTION EXPORT =================== //
+// ====================================================== //
+
 module.exports = mongoose.model("party", partySchema);
+
+//*--------------------------- END §SECTION EXPORT -------------------------- */

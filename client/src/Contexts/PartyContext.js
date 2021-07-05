@@ -8,9 +8,17 @@ export const useParty = () => useContext(PartyContext);
 export function PartyProvider({ children }) {
   const [refresh, setRefresh] = useState(false);
   const [djs, setDjs] = useState([]);
+  const [musicalGenres, setMusicalGenres] = useState([]);
 
   useEffect(() => {}, []);
-  const value = { refresh, setRefresh, djs, setDjs };
+  const value = {
+    refresh,
+    setRefresh,
+    djs,
+    setDjs,
+    musicalGenres,
+    setMusicalGenres,
+  };
   return (
     <PartyContext.Provider value={value}>{children}</PartyContext.Provider>
   );
