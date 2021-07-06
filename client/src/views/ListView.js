@@ -11,8 +11,11 @@ import {
   useParams,
   useRouteMatch,
 } from "react-router-dom";
+import { useParty } from "../Contexts/PartyContext";
+import { useSearch } from "../Contexts/SearchContext";
 function ListView(props) {
-  const [parties, setParties] = useState([]);
+  const { parties, setParties, refresh } = useParty();
+  const { searchTerm } = useSearch();
 
   useEffect(() => {
     fetch("http://localhost:5000/parties/all")
@@ -28,11 +31,15 @@ function ListView(props) {
       </Typography>
       <Grid container align="center" spacing={3}>
         {parties.length &&
-          parties.map((party) => (
-            <Grid item xs={12} key={party._id}>
-              <PartyInfoCard party={party} />
-            </Grid>
-          ))}
+          parties.map((party) => {
+            if (party.name.toUpperCase().includes(searchTerm.toUpperCase())) {
+              return (
+                <Grid item xs={12} key={party._id}>
+                  <PartyInfoCard party={party} />
+                </Grid>
+              );
+            }
+          })}
       </Grid>{" "}
     </div>
   );

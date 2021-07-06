@@ -18,43 +18,52 @@ import { PartyProvider } from "./Contexts/PartyContext";
 import { CssBaseline, ThemeProvider } from "@material-ui/core";
 import { theme } from "./components/Toolbox/cssTheme";
 import PrivateRoute from "./components/PrivateRoute.js";
+import { SearchProvider } from "./Contexts/SearchContext";
+import UserParties from "./views/UserParties.js";
 function App() {
   return (
     <div>
       <CssBaseline />
       <ThemeProvider theme={theme}>
-        <AuthProvider>
-          <MuiPickersUtilsProvider utils={DateFnsUtils}>
-            <Router>
-              <PrimaryAppBar />
-              <Switch>
-                {" "}
-                <PartyProvider>
-                  <Route exact path="/" children={<Home />} />{" "}
-                  <Route exact path="/signin" children={<SignIn />} />
-                  <Route exact path="/signup" children={<SignUp />} />
-                  <Route exact path="/testing" children={<Trulolo />} />
-                  <Route exact path="/parties" children={<ListView />} />
-                  <Route
-                    exact
-                    path="/parties/:partyName"
-                    children={<EventDetailView />}
-                  />
-                  <PrivateRoute
-                    exact
-                    path="/dashboard"
-                    children={<Dashboard />}
-                  />
-                  <PrivateRoute
-                    exact
-                    path="/submitevent"
-                    children={<SubmitEvent />}
-                  />
-                </PartyProvider>
-              </Switch>
-            </Router>
-          </MuiPickersUtilsProvider>
-        </AuthProvider>
+        <PartyProvider>
+          <SearchProvider>
+            <AuthProvider>
+              <MuiPickersUtilsProvider utils={DateFnsUtils}>
+                <Router>
+                  <PrimaryAppBar />
+                  <Switch>
+                    {" "}
+                    <Route exact path="/" children={<Home />} />{" "}
+                    <Route exact path="/signin" children={<SignIn />} />
+                    <Route exact path="/signup" children={<SignUp />} />
+                    <Route exact path="/testing" children={<Trulolo />} />
+                    <Route exact path="/parties" children={<ListView />} />
+                    <Route
+                      exact
+                      path="/parties/:partyName"
+                      children={<EventDetailView />}
+                    />
+                    <PrivateRoute
+                      exact
+                      path="/dashboard"
+                      children={<Dashboard />}
+                    />{" "}
+                    <PrivateRoute
+                      exact
+                      path="/:username"
+                      children={<UserParties />}
+                    />
+                    <PrivateRoute
+                      exact
+                      path="/submitevent"
+                      children={<SubmitEvent />}
+                    />
+                  </Switch>
+                </Router>
+              </MuiPickersUtilsProvider>
+            </AuthProvider>
+          </SearchProvider>{" "}
+        </PartyProvider>
       </ThemeProvider>
     </div>
   );

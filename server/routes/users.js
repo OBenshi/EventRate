@@ -86,7 +86,7 @@ router.get(
       // .populate("reviews")
       .populate({
         path: "reviews",
-        populate: { path: "party", select: ["_id", "name"] },
+        populate: { path: "party" },
       })
       .then((users) => {
         res.send(users);

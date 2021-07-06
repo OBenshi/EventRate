@@ -19,7 +19,7 @@ import { useAuth } from "../Contexts/AuthContext";
 import { useParty } from "../Contexts/PartyContext";
 
 export default function SignIn() {
-  const { isUser, setIsUser } = useAuth();
+  const { isUser, setIsUser, setWithExpiry } = useAuth();
   const classes = useStyles();
   const passwordRef = useRef();
   const emailRef = useRef();
@@ -40,7 +40,7 @@ export default function SignIn() {
     })
       .then((res) => res.json())
       .then((data) => {
-        localStorage.setItem("token", data.token);
+        setWithExpiry("token", data.token, 28800000);
         setIsUser(true);
         // history.push("/parties");
         history.go(-1);

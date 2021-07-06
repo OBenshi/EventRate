@@ -28,32 +28,35 @@ export default function PartyInfoCard(props) {
   const [averagePopularity, setAveragePopularity] = useState(0);
   const { refresh, setRefresh } = useParty();
 
-  const calcPartyRating = (party) => {
-    const initialVals = { avg: 0, n: 0 };
-    setAveragePopularity(party.reviews.reduce(averageScores, initialVals).avg);
-    console.log("Average popularity:", averagePopularity);
-  };
+  // const calcPartyRating = (party) => {
+  //   const initialVals = { avg: 0, n: 0 };
+  //   setAveragePopularity(party.reviews.reduce(averageScores, initialVals).avg);
+  //   console.log("Average popularity:", averagePopularity);
+  // };
   useEffect(() => {
-    calcPartyRating(party);
+    // calcPartyRating(party);
   }, [refresh]);
+  const PartyPic = party.img;
   return (
     <Card
       className={`${classes.partyCard} ${classes.cork}`}
       id={`${party.name}InfoCard`}
     >
       <CardActionArea>
-        <CardMedia
-          className={classes.media}
-          image={party.img}
-          title={party.name}
-        />
+        {PartyPic && (
+          <CardMedia
+            className={classes.media}
+            image={PartyPic}
+            title={party.name}
+          />
+        )}
         <CardContent>
           <Link to={`/parties/${party.name}`}>
             <Typography gutterBottom variant="h5">
               {party.name}
             </Typography>
           </Link>
-          <h1>{averagePopularity && averagePopularity}</h1>
+          {/* <h1>{averagePopularity && averagePopularity}</h1> */}
           {party.description && (
             <Typography variant="body2" color="textPrimary">
               {`${party.description.substring(0, 150)}...`}

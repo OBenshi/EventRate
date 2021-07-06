@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import {
   AppBar,
   Toolbar,
@@ -13,6 +13,7 @@ import {
   Grid,
   List,
   useScrollTrigger,
+  TextField,
 } from "@material-ui/core";
 import InboxIcon from "@material-ui/icons/MoveToInbox";
 import FavoriteIcon from "@material-ui/icons/Favorite";
@@ -31,11 +32,14 @@ import {
 } from "react-router-dom";
 import { useStyles } from "./Toolbox/cssTheme";
 import { useAuth } from "../Contexts/AuthContext";
-
+// import HandleSearch from "./HandleSearch";
+import { useSearch } from "../Contexts/SearchContext";
 export default function PrimaryAppBar(props) {
   const classes = useStyles();
   const { isUser, setIsUser, token, userInfo, setUserInfo } = useAuth();
+  const { searchTerm, setSearchTerm } = useSearch();
   console.log(`isUser`, isUser);
+  const searchRef = useRef();
   let { path, url } = useRouteMatch();
   const history = useHistory();
   const [drawerState, setDrawerState] = useState(false);
@@ -111,25 +115,24 @@ export default function PrimaryAppBar(props) {
       </List>
 
       <Divider />
-
-      <List>
-        <Link to="/Favourites">
-          <ListItem button key={"favourites"}>
-            <ListItemIcon>
-              <FavoriteIcon />
-            </ListItemIcon>
-            <ListItemText primary={"Favourites"} />
-          </ListItem>
-        </Link>{" "}
-        <NavLink to="/dashboard">
-          <ListItem button key={"dashboard"}>
-            <ListItemIcon>
-              <InboxIcon />
-            </ListItemIcon>
-            <ListItemText primary={"Manage profile"} />
-          </ListItem>
-        </NavLink>
-        {isUser && (
+      {userInfo && (
+        <List>
+          <Link to={`/${userInfo.username}`}>
+            <ListItem button key={"favourites"}>
+              <ListItemIcon>
+                <FavoriteIcon />
+              </ListItemIcon>
+              <ListItemText primary={"My Parties"} />
+            </ListItem>
+          </Link>{" "}
+          <NavLink to="/dashboard">
+            <ListItem button key={"dashboard"}>
+              <ListItemIcon>
+                <InboxIcon />
+              </ListItemIcon>
+              <ListItemText primary={"Manage profile"} />
+            </ListItem>
+          </NavLink>
           <Link to="/submitevent">
             <ListItem button key={"SubmitAParty"}>
               <ListItemIcon>
@@ -138,19 +141,17 @@ export default function PrimaryAppBar(props) {
               <ListItemText primary={"Submit a Party"} />
             </ListItem>{" "}
           </Link>
-        )}
-        <ListItem>
-          <ListItemText primary={`${isUser},${userInfo.username}`} />{" "}
-        </ListItem>
-        {isUser && (
+          <ListItem>
+            <ListItemText primary={`${isUser},${userInfo.username}`} />{" "}
+          </ListItem>
           <ListItem button key={"logout"} onClick={handleLogout}>
             <ListItemIcon>
               <InboxIcon />
             </ListItemIcon>
             <ListItemText primary={"Logout"} />
           </ListItem>
-        )}
-      </List>
+        </List>
+      )}
     </div>
   );
 
@@ -169,7 +170,10 @@ export default function PrimaryAppBar(props) {
       elevation: trigger ? 4 : 0,
     });
   }
-
+  const handleSearch = (event) => {
+    event.preventDefault();
+    setSearchTerm(searchRef.current.value);
+  };
   useEffect(() => {
     console.log(userInfo);
   }, []);
@@ -178,45 +182,55 @@ export default function PrimaryAppBar(props) {
       <ElevationScroll {...props}>
         <AppBar position="fixed">
           <Toolbar>
-            <IconButton
-              edge="start"
-              className={classes.menuButton}
-              color="inherit"
-              aria-label="open drawer"
-              onClick={toggleDrawer(true)}
-            >
-              <MenuIcon />
-            </IconButton>{" "}
-            <Drawer
-              anchor={"left"}
-              open={drawerState}
-              onClose={toggleDrawer(false)}
-              // className={classes.drawerList}
-              elevation={16}
-            >
-              <Typography variant="h6" align="center" noWrap color="primary">
+            <Grid container align="right">
+              <IconButton
+                edge="start"
+                className={classes.menuButton}
+                color="inherit"
+                aria-label="open drawer"
+                onClick={toggleDrawer(true)}
+              >
+                <MenuIcon />
+              </IconButton>{" "}
+              <Drawer
+                anchor={"left"}
+                open={drawerState}
+                onClose={toggleDrawer(false)}
+                // className={classes.drawerList}
+                elevation={16}
+              >
+                <Typography variant="h6" align="center" noWrap color="primary">
+                  EventRate
+                </Typography>
+                {list()}
+              </Drawer>
+              <Typography className={classes.title} variant="h6" noWrap>
                 EventRate
               </Typography>
-              {list()}
-            </Drawer>
-            <Typography className={classes.title} variant="h6" noWrap>
-              Material-UI
-            </Typography>
-            {history.location.pathname === "/parties" && (
-              <div className={classes.search}>
-                <div className={classes.searchIcon}>
-                  <SearchIcon />
+              {history.location.pathname === "/parties" && (
+                <div className={classes.search}>
+                  <div className={classes.searchIcon}>
+                    <SearchIcon />
+                  </div>
+                  <InputBase
+                    placeholder="Find a party…"
+                    classes={{
+                      root: classes.inputRoot,
+                      input: classes.inputInput,
+                    }}
+                    id="searchBar"
+                    name="searchBar"
+                    key={"searchBar"}
+                    value={searchTerm}
+                    type="text"
+                    inputRef={searchRef}
+                    inputProps={{ "aria-label": "search" }}
+                    onChange={handleSearch}
+                    autoFocus
+                  />
                 </div>
-                <InputBase
-                  placeholder="Find a party…"
-                  classes={{
-                    root: classes.inputRoot,
-                    input: classes.inputInput,
-                  }}
-                  inputProps={{ "aria-label": "search" }}
-                />
-              </div>
-            )}
+              )}
+            </Grid>{" "}
           </Toolbar>
         </AppBar>
       </ElevationScroll>

@@ -90,6 +90,7 @@ router.post(
       date: reqDate,
       rating: reqRating,
       text: reqText,
+      display: true,
     });
 
     //? ADDING Review TO USER DATA

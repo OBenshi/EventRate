@@ -26,13 +26,14 @@ export const useStyles = makeStyles((theme) => ({
   },
   title: {
     flexGrow: 1,
-    display: "none",
+    // display: "none",
     [theme.breakpoints.up("sm")]: {
       display: "block",
     },
   },
   search: {
     position: "relative",
+    display: "flex",
     borderRadius: theme.shape.borderRadius,
     backgroundColor: fade(theme.palette.common.white, 0.15),
     "&:hover": {
