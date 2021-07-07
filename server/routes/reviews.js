@@ -75,8 +75,6 @@ router.post(
   "/new",
   passport.authenticate("jwt", { session: false }),
   (req, res) => {
-    //TODO protected route
-    console.log("userId", req.body.user);
     const reqUser = req.body.user;
     const reqParty = req.body.party;
     const reqDate = req.body.date;
@@ -147,8 +145,6 @@ router.post(
   (req, res) => {
     console.log(`req.body.rating`, req.body.rating);
     reviewModel.findById(req.body._id).then((review) => {
-      console.log(review.user.equals(req.user._id));
-      console.log(review.user === req.user._id);
       if (review.user.equals(req.user._id)) {
         const review = reviewModel
           .findOneAndUpdate(
@@ -172,8 +168,6 @@ router.post(
   (req, res) => {
     console.log(`req.body.rating`, req.body.rating);
     reviewModel.findById(req.body._id).then((review) => {
-      // console.log(review.user.equals(req.user._id));
-      // console.log(review.user === req.user._id);
       if (review.user.equals(req.user._id)) {
         const review = reviewModel
           .findOneAndUpdate(
