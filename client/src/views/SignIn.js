@@ -1,19 +1,17 @@
-import React, { useEffect, useState, useRef } from "react";
 import Avatar from "@material-ui/core/Avatar";
+import Box from "@material-ui/core/Box";
 import Button from "@material-ui/core/Button";
-import CssBaseline from "@material-ui/core/CssBaseline";
-import TextField from "@material-ui/core/TextField";
-import FormControlLabel from "@material-ui/core/FormControlLabel";
 import Checkbox from "@material-ui/core/Checkbox";
+import Container from "@material-ui/core/Container";
+import FormControlLabel from "@material-ui/core/FormControlLabel";
 // import Link from "@material-ui/core/Link";
 import Grid from "@material-ui/core/Grid";
-import Box from "@material-ui/core/Box";
-import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
+import TextField from "@material-ui/core/TextField";
 import Typography from "@material-ui/core/Typography";
-import { makeStyles } from "@material-ui/core/styles";
-import Container from "@material-ui/core/Container";
-import Copyright from "../components/copyright";
+import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
+import React, { useRef } from "react";
 import { Link, useHistory } from "react-router-dom";
+import Copyright from "../components/copyright";
 import { useStyles } from "../components/Toolbox/cssTheme";
 import { useAuth } from "../Contexts/AuthContext";
 import { useParty } from "../Contexts/PartyContext";
@@ -101,13 +99,8 @@ export default function SignIn() {
             Sign In
           </Button>
           <Grid container>
-            <Grid item xs>
-              <Link href="#" variant="body2">
-                Forgot password?
-              </Link>
-            </Grid>
             <Grid item>
-              <Link href="#" variant="body2">
+              <Link to="/signup" variant="body2">
                 {"Don't have an account? Sign Up"}
               </Link>
             </Grid>

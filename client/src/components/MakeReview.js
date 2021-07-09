@@ -104,7 +104,7 @@ export default function MakeReview(props) {
         <Grid container alignItems="center" align="center">
           <Grid item xs={6}>
             <Typography variant="h6" noWrap>
-              Leave a Review&nbsp;{isUser === true && typeof userInfo._id}
+              Leave a Review&nbsp;
             </Typography>
           </Grid>
           <Grid item xs={6} align="center">

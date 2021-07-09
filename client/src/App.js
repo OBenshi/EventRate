@@ -20,9 +20,14 @@ import { theme } from "./components/Toolbox/cssTheme";
 import PrivateRoute from "./components/PrivateRoute.js";
 import { SearchProvider } from "./Contexts/SearchContext";
 import UserParties from "./views/UserParties.js";
+import ManageProfile from "./views/ManageProfile.js";
+import EditEvent from "./views/EditEvent";
+import { useStyles } from "./components/Toolbox/cssTheme";
+import "@fontsource/major-mono-display";
 function App() {
+  const classes = useStyles();
   return (
-    <div>
+    <div className={classes.rootOfRoots}>
       <CssBaseline />
       <ThemeProvider theme={theme}>
         <PartyProvider>
@@ -42,21 +47,26 @@ function App() {
                       exact
                       path="/parties/:partyName"
                       children={<EventDetailView />}
-                    />
-                    <PrivateRoute
-                      exact
-                      path="/dashboard"
-                      children={<Dashboard />}
                     />{" "}
                     <PrivateRoute
                       exact
-                      path="/:username"
-                      children={<UserParties />}
-                    />
+                      path="/:username/manageprofile"
+                      children={<ManageProfile />}
+                    />{" "}
                     <PrivateRoute
                       exact
                       path="/submitevent"
                       children={<SubmitEvent />}
+                    />{" "}
+                    <PrivateRoute
+                      exact
+                      path="/parties/:partyName/edit"
+                      children={<EditEvent />}
+                    />
+                    <PrivateRoute
+                      exact
+                      path="/:username"
+                      children={<UserParties />}
                     />
                   </Switch>
                 </Router>

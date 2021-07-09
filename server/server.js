@@ -5,6 +5,7 @@ const mongoURI = require("./config.js").mongoURI;
 const cors = require("cors");
 const passport = require("passport");
 const { jwtStrategy } = require("./passport");
+const nodemailer = require("nodemailer");
 
 //initialize express app
 const app = express();
@@ -30,6 +31,14 @@ app.use("/users", require("./routes/users"));
 app.use("/parties", require("./routes/parties"));
 app.use("/reviews", require("./routes/reviews"));
 
+// const smtpTransport = nodemailer.createTransport("SMTP", {
+//   service: "Gmail",
+//   auth: {
+//     user: "Your Gmail ID",
+//     pass: "Gmail Password",
+//   },
+// });
+// const rand, mailOptions, host, link;
 app.listen(port, () => {
   console.log("Server is running on " + port + "port");
 });

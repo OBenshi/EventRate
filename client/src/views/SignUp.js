@@ -1,23 +1,18 @@
-import React, { useEffect, useState, useRef } from "react";
 import {
   Avatar,
-  Button,
-  CssBaseline,
-  TextField,
-  FormControlLabel,
-  Checkbox,
-  Grid,
   Box,
-  Typography,
-  makeStyles,
+  Button,
   Container,
+  Grid,
+  TextField,
+  Typography,
 } from "@material-ui/core";
 import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
-import { DatePicker } from "@material-ui/pickers";
-import Copyright from "../components/copyright";
-import { Link, useHistory } from "react-router-dom";
-import axios from "axios";
 import Alert from "@material-ui/lab/Alert";
+import { DatePicker } from "@material-ui/pickers";
+import React, { useRef, useState } from "react";
+import { Link, useHistory } from "react-router-dom";
+import Copyright from "../components/copyright";
 import { useStyles } from "../components/Toolbox/cssTheme";
 import { useAuth } from "../Contexts/AuthContext";
 
@@ -40,7 +35,9 @@ export default function SignUp() {
   const passwordConfirmRef = useRef();
   const firstNameRef = useRef();
   const lastNameRef = useRef();
-
+  const emailRegex = new RegExp(
+    '^(([^<>()[]\\.,;:sW@"]+(.[^<>()[]\\.,;:s@"]+)*)|(".+"))@(([[0-9]{1,3}.[0-9]{1,3}.[0-9]{1,3}.[0-9]{1,3}])|(([a-zA-Z-0-9]+.)+[a-zA-Z]{2,}))$'
+  );
   const handleSubmit = async (event) => {
     event.preventDefault();
     setOtherError("");
@@ -147,6 +144,15 @@ export default function SignUp() {
                 label="Username"
                 name="username"
                 autoComplete="username"
+                onChange={(event) => {
+                  if (event.target.value.length < 3) {
+                    setUsernameError(
+                      "username must be at least 3 characters long."
+                    );
+                  } else {
+                    setUsernameError(null);
+                  }
+                }}
               />
             </Grid>
             <Grid item xs={12} sm={6}>
@@ -181,9 +187,21 @@ export default function SignUp() {
                 required
                 fullWidth
                 id="email"
+                // onChange={(event)=>{if(event.target.value)}}
                 inputRef={emailRef}
                 label="Email Address"
                 name="email"
+                onChange={(event) => {
+                  if (
+                    !/^(([^<>()\[\]\\.,;:\s\W@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(
+                      event.target.value
+                    )
+                  ) {
+                    setEmailError("Please enter a valid email address");
+                  } else {
+                    setEmailError("");
+                  }
+                }}
                 autoComplete="email"
               />
             </Grid>

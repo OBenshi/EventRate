@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useRef } from "react";
+import axios from "axios";
 import {
   AppBar,
   Toolbar,
@@ -13,23 +14,14 @@ import {
   Grid,
   List,
   useScrollTrigger,
-  TextField,
 } from "@material-ui/core";
 import InboxIcon from "@material-ui/icons/MoveToInbox";
 import FavoriteIcon from "@material-ui/icons/Favorite";
-import { fade, makeStyles } from "@material-ui/core/styles";
 import MenuIcon from "@material-ui/icons/Menu";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faBackward } from "@fortawesome/free-solid-svg-icons";
 import SearchIcon from "@material-ui/icons/Search";
-import {
-  BrowserRouter as Router,
-  Route,
-  Switch,
-  Link,
-  NavLink,
-  useHistory,
-  useParams,
-  useRouteMatch,
-} from "react-router-dom";
+import { NavLink, useHistory, useRouteMatch } from "react-router-dom";
 import { useStyles } from "./Toolbox/cssTheme";
 import { useAuth } from "../Contexts/AuthContext";
 // import HandleSearch from "./HandleSearch";
@@ -44,18 +36,36 @@ export default function PrimaryAppBar(props) {
   const history = useHistory();
   const [drawerState, setDrawerState] = useState(false);
 
-  const handleLogout = () => {
-    const request = { method: "post", body: { _id: userInfo._id } };
-    fetch("/users/logout", request)
-      .then((response) => {
-        setUserInfo([]);
-        setIsUser(false);
-        window.localStorage.removeItem("token");
-        // history.push("/");
-        window.location.reload();
-        console.log(response);
-      })
-      .catch((error) => console.error(error));
+  // const handleLogout = () => {
+  //   console.log(`userInfo._id`, userInfo._id);
+  //   const request = {
+  //     method: "post",
+  //     headers: {
+  //       "Content-Type": "application/json",
+  //     },
+  //     body: JSON.stringify({ _id: userInfo._id }),
+  //   };
+  //   fetch("http://localhost:5000/users/logout/", request)
+  //     .then((thing8) => {
+  //       console.log(90909, thing8);
+  //       setUserInfo(null);
+  //       setIsUser(false);
+  //       window.localStorage.removeItem("token");
+  //       // history.push("/");
+  //       window.location.reload();
+  //     })
+  //     .catch((error) => console.error(error));
+  // };
+  const handleLogout = async () => {
+    const user = { _id: userInfo._id };
+    setUserInfo(null);
+    setIsUser(false);
+    // setLoading(true);
+    window.localStorage.removeItem("token");
+    history.push("/");
+    await axios
+      .post("http://localhost:5000/users/logout", user)
+      .then((u8u) => console.log("u8u", u8u.data));
   };
 
   const toggleDrawer = (open) => (event) => {
@@ -76,7 +86,17 @@ export default function PrimaryAppBar(props) {
       onKeyDown={toggleDrawer(anchor, false)}
     >
       <List>
-        <NavLink to="/">
+        <NavLink
+          className={classes.navlink}
+          to="/"
+          isActive={(match, location) => {
+            if (!match) {
+              return false;
+            }
+            const eventID = parseInt(match.params.eventID);
+            return !isNaN(eventID) && eventID % 2 === 1;
+          }}
+        >
           <ListItem button key={"home"}>
             <ListItemIcon>
               <InboxIcon />
@@ -84,7 +104,17 @@ export default function PrimaryAppBar(props) {
             <ListItemText primary={"home"} />
           </ListItem>{" "}
         </NavLink>
-        <NavLink to="/parties">
+        <NavLink
+          className={classes.navlink}
+          to="/parties"
+          isActive={(match, location) => {
+            if (!match) {
+              return false;
+            }
+            const eventID = parseInt(match.params.eventID);
+            return !isNaN(eventID) && eventID % 2 === 1;
+          }}
+        >
           <ListItem button key={"parties"}>
             <ListItemIcon>
               <InboxIcon />
@@ -93,7 +123,17 @@ export default function PrimaryAppBar(props) {
           </ListItem>{" "}
         </NavLink>
         {!isUser && (
-          <NavLink to="/signup">
+          <NavLink
+            className={classes.navlink}
+            to="/signup"
+            isActive={(match, location) => {
+              if (!match) {
+                return false;
+              }
+              const eventID = parseInt(match.params.eventID);
+              return !isNaN(eventID) && eventID % 2 === 1;
+            }}
+          >
             <ListItem button key={"signup"}>
               <ListItemIcon>
                 <InboxIcon />
@@ -103,29 +143,39 @@ export default function PrimaryAppBar(props) {
           </NavLink>
         )}
         {!isUser && (
-          <Link to="/signin">
+          <NavLink className={classes.navlink} to="/signin">
             <ListItem button key={"signin"}>
               <ListItemIcon>
                 <InboxIcon />
               </ListItemIcon>
               <ListItemText primary={"Sign in"} />
             </ListItem>{" "}
-          </Link>
+          </NavLink>
         )}
       </List>
 
       <Divider />
       {userInfo && (
         <List>
-          <Link to={`/${userInfo.username}`}>
+          <NavLink to={`/${userInfo.username}`} className={classes.navlink}>
             <ListItem button key={"favourites"}>
               <ListItemIcon>
                 <FavoriteIcon />
               </ListItemIcon>
               <ListItemText primary={"My Parties"} />
             </ListItem>
-          </Link>{" "}
-          <NavLink to="/dashboard">
+          </NavLink>{" "}
+          <NavLink
+            className={classes.navlink}
+            to={`/${userInfo.username}/manageprofile`}
+            isActive={(match, location) => {
+              if (!match) {
+                return false;
+              }
+              const eventID = parseInt(match.params.eventID);
+              return !isNaN(eventID) && eventID % 2 === 1;
+            }}
+          >
             <ListItem button key={"dashboard"}>
               <ListItemIcon>
                 <InboxIcon />
@@ -133,17 +183,14 @@ export default function PrimaryAppBar(props) {
               <ListItemText primary={"Manage profile"} />
             </ListItem>
           </NavLink>
-          <Link to="/submitevent">
+          <NavLink className={classes.navlink} to="/submitevent">
             <ListItem button key={"SubmitAParty"}>
               <ListItemIcon>
                 <InboxIcon />
               </ListItemIcon>
               <ListItemText primary={"Submit a Party"} />
             </ListItem>{" "}
-          </Link>
-          <ListItem>
-            <ListItemText primary={`${isUser},${userInfo.username}`} />{" "}
-          </ListItem>
+          </NavLink>
           <ListItem button key={"logout"} onClick={handleLogout}>
             <ListItemIcon>
               <InboxIcon />
@@ -180,7 +227,7 @@ export default function PrimaryAppBar(props) {
   return (
     <div className={classes.NavRoot}>
       <ElevationScroll {...props}>
-        <AppBar position="fixed">
+        <AppBar position="fixed" className={classes.AppBar2}>
           <Toolbar>
             <Grid container align="right">
               <IconButton
@@ -196,6 +243,12 @@ export default function PrimaryAppBar(props) {
                 anchor={"left"}
                 open={drawerState}
                 onClose={toggleDrawer(false)}
+                // transitionDuration={5000000000000000000000000000000000000}
+                // transitionDuration={{
+                //   appear: 9999999999999,
+                //   enter: 9999999999999,
+                //   exit: 9999999999999,
+                // }}
                 // className={classes.drawerList}
                 elevation={16}
               >
@@ -204,6 +257,9 @@ export default function PrimaryAppBar(props) {
                 </Typography>
                 {list()}
               </Drawer>
+              <IconButton aria-label="back" onClick={history.goBack}>
+                <FontAwesomeIcon icon={faBackward} />
+              </IconButton>
               <Typography className={classes.title} variant="h6" noWrap>
                 EventRate
               </Typography>

@@ -9,16 +9,14 @@ import {
 } from "@material-ui/core";
 import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
 import Alert from "@material-ui/lab/Alert";
-import { DatePicker } from "@material-ui/pickers";
 import React, { useRef, useState } from "react";
-import { Link, useHistory } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 import Copyright from "../components/copyright";
 import { useStyles } from "../components/Toolbox/cssTheme";
 import { useAuth } from "../Contexts/AuthContext";
-
 export default function ManageProfile() {
   const classes = useStyles();
-  const { userInfo, setUserInfo, setWithExpiry } = useAuth();
+  const { userInfo, setUserInfo, setWithExpiry, token } = useAuth();
   const [usernameError, setUsernameError] = useState("");
   const [emailError, setEmailError] = useState("");
   const [passwordError, setPasswordError] = useState("");
@@ -38,30 +36,29 @@ export default function ManageProfile() {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    setOtherError("");
-    setEmailError("");
-    setUsernameError("");
-    setFirstNameError("");
-    setLastNameError("");
-    setPasswordError("");
+    setOtherError(null);
+    setEmailError(null);
+    setUsernameError(null);
+    setFirstNameError(null);
+    setLastNameError(null);
+    setPasswordError(null);
 
     setLoading(true);
-    if (passwordRef.current.value !== passwordConfirmRef.current.value) {
-      setPasswordError(`Passwords do not match`);
+    if (passwordRef.current.value !== "") {
+      if (passwordRef.current.value !== passwordConfirmRef.current.value) {
+        setPasswordError(`Passwords do not match`);
+      }
     }
-    if (firstNameRef.current.value === "") {
-      setFirstNameError("First name is required");
+    if (emailRef.current.value !== "") {
+      if (
+        !/^(([^<>()\[\]\\.,;:\s\W@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(
+          emailRef.current.value
+        )
+      ) {
+        setEmailError("Email is not valid");
+      }
     }
-    if (lastNameRef.current.value === "") {
-      setLastNameError("Last name is required");
-    }
-    if (
-      !/^(([^<>()\[\]\\.,;:\s\W@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(
-        emailRef.current.value
-      )
-    ) {
-      setEmailError("Email is not valid");
-    }
+
     if (
       otherError ||
       emailError ||
@@ -73,30 +70,43 @@ export default function ManageProfile() {
       setLoading(false);
       return;
     } else {
-      const newUser = {
-        username: usernameRef.current.value,
-        email: emailRef.current.value,
-        password: passwordRef.current.value,
-        firstName: firstNameRef.current.value,
-        lastName: lastNameRef.current.value,
-        birthday: selectedDate.toISOString(),
-        reviews: [],
-        own_parties: [],
+      const updatedUser = {
+        username:
+          usernameRef.current.value !== "" && usernameRef.current.value
+            ? usernameRef.current.value
+            : userInfo.username,
+        email:
+          emailRef.current.value !== "" && emailRef.current.value
+            ? emailRef.current.value
+            : userInfo.email,
+        password:
+          passwordRef.current.value !== "" && passwordRef.current.value
+            ? passwordRef.current.value
+            : userInfo.password,
+        firstName:
+          firstNameRef.current.value !== "" && firstNameRef.current.value
+            ? firstNameRef.current.value
+            : userInfo.firstName,
+        lastName:
+          lastNameRef.current.value !== "" && lastNameRef.current.value
+            ? lastNameRef.current.value
+            : userInfo.lastName,
       };
-      fetch("http://localhost:5000/users/signup", {
-        method: "post",
+      console.log(`updatedUser`, updatedUser);
+
+      fetch("http://localhost:5000/users/edit", {
+        method: "POST",
         headers: {
           "Content-Type": "application/json",
+          Authorization: "Bearer " + token,
         },
-        body: JSON.stringify(newUser),
+        body: JSON.stringify(updatedUser),
       })
         .then((res) => res.json())
         .then((data) => {
-          console.log(`data`, data);
+          console.log(data);
           if (!data.errors) {
-            setWithExpiry("token", data.token, 28800000);
             setUserInfo(data.user);
-            history.push("/parties");
           } else {
             data.errors.forEach((error) => {
               if (error.param === "username") {
@@ -109,13 +119,13 @@ export default function ManageProfile() {
             });
           }
         })
-        .catch((err) => {
-          setLoading(false);
-          setOtherError(err);
-          console.log(err);
+        .catch((error) => {
+          console.error(error);
         });
+
+      setLoading(false);
+      return;
     }
-    setLoading(false);
   };
 
   return (
@@ -221,15 +231,8 @@ export default function ManageProfile() {
             className={classes.submit}
             disabled={loading}
           >
-            Sign ?Up
+            Update
           </Button>
-          <Grid container justify="flex-end">
-            <Grid item>
-              <Link href="#" variant="body2">
-                Already have an account? Sign in
-              </Link>
-            </Grid>
-          </Grid>
         </form>
       </div>
       <Box mt={5}>

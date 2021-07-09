@@ -51,8 +51,8 @@ export default function PartyInfoCard(props) {
           />
         )}
         <CardContent>
-          <Link to={`/parties/${party.name}`}>
-            <Typography gutterBottom variant="h5">
+          <Link to={`/parties/${party.name}`} className={classes.navlink}>
+            <Typography gutterBottom color="textSecondary" variant="h4">
               {party.name}
             </Typography>
           </Link>
@@ -65,13 +65,12 @@ export default function PartyInfoCard(props) {
         </CardContent>
       </CardActionArea>
       <CardActions>
-        <Grid container align="center">
-          <Button size="small" color="primary">
-            Share
-          </Button>
+        <Grid container justify="center">
           <Link to={`/parties/${party.name}`}>
             <Button size="small" color="primary">
-              Learn More
+              <Typography color="primary" align="center">
+                LEARN MORE
+              </Typography>
             </Button>
           </Link>
         </Grid>

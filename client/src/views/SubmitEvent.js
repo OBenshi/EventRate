@@ -68,6 +68,7 @@ function SubmitEvent() {
       organizers: [userInfo._id],
       post_date: postDate.toISOString(),
       date: selectedDate.toISOString(),
+      display: true,
     };
     fetch("http://localhost:5000/parties/new", {
       method: "post",
@@ -80,21 +81,6 @@ function SubmitEvent() {
       .then((res) => res.json())
       .then((data) => {
         console.log(`data`, data);
-        // if (!data.errors) {
-        //   localStorage.setItem("token", data.token);
-        //   setUserInfo(data.user);
-        //   history.push("/parties");
-        // } else {
-        //   data.errors.forEach((error) => {
-        //     if (error.param === "username") {
-        //       setUsernameError(error.msg);
-        //     } else if (error.param === "email") {
-        //       setEmailError(error.msg);
-        //     } else if (error.param === "password") {
-        //       setPasswordError(error.msg);
-        //     }
-        //   });
-        // }
       })
       .catch((err) => {
         // setLoading(false);
@@ -141,126 +127,135 @@ function SubmitEvent() {
           SUBMIT A PARTY
         </Typography>
         <form className={classes.form} noValidate>
-          <TextField
-            id="partyName"
-            inputRef={nameRef}
-            label="Party name"
-            placeholder="Party name"
-            // multiline
-            rows="1"
-            fullWidth
-            variant="outlined"
-          />{" "}
-          <TextField
-            id="partyDescription"
-            inputRef={descriptionRef}
-            label="Party description"
-            placeholder="Party description"
-            multiline
-            rows="10"
-            fullWidth
-            variant="outlined"
-          />
-          <TextField
-            id="partyLocation"
-            inputRef={locationRef}
-            label="Party location"
-            placeholder="Party location"
-            rows="1"
-            // fullWidth
-            variant="outlined"
-          />
-          <Grid container direction="row" justify="center">
-            <Grid item>
-              <TextField
-                // id="djInput"
-                inputRef={musicalGenreRef}
-                label="Musical Genres"
-                placeholder="Techno,House,Polka etc..."
-                rows="1"
-                variant="outlined"
-              />
-              <IconButton
-                // aria-label="open drawer"
-                onClick={() => {
-                  // console.log(djRef.current.value);
-                  setMusicalGenres([
-                    ...musicalGenres,
-                    musicalGenreRef.current.value,
-                  ]);
-                  musicalGenreRef.current.value = "";
-                  // console.log(djs);
-                }}
-                // edge="start"
-              >
-                <FontAwesomeIcon icon={faPlusSquare} color="#ffffff" />
-              </IconButton>
+          <Grid container>
+            <Grid container align="center">
+              <Grid item xs={12}>
+                <Typography color="secondary"> Party name:</Typography>
+              </Grid>
+              <Grid item>
+                <TextField
+                  id="partyName"
+                  inputRef={nameRef}
+                  label="Party name"
+                  placeholder="Party name"
+                  // multiline
+                  rows="1"
+                  fullWidth
+                  // variant="standard"
+                />{" "}
+              </Grid>
             </Grid>
-            <Grid item xs={6}>
-              <GenreList />
-            </Grid>
-          </Grid>
-          <Grid container direction="row" justify="center">
-            <Grid item>
-              <TextField
-                // id="djInput"
-                inputRef={djRef}
-                label="Dj"
-                placeholder="Dj"
-                rows="1"
-                variant="outlined"
-              />
-              <IconButton
-                // aria-label="open drawer"
-                onClick={() => {
-                  console.log(djRef.current.value);
-                  setDjs([...djs, djRef.current.value]);
-                  djRef.current.value = "";
-                  console.log(djs);
-                }}
-                // edge="start"
-              >
-                <FontAwesomeIcon icon={faPlusSquare} color="#ffffff" />
-              </IconButton>
-            </Grid>
-            <Grid item xs={6}>
-              <DjsList />
-            </Grid>
-          </Grid>
-          <DateTimePicker
-            disablePast
-            variant="outlined"
-            fullWidth
-            // id="birthdate"
-            inputRef={partyDateRef}
-            // openTo="year"
-            // format="dd/MM/yyyy"
-            label="Party Date"
-            // views={["year", "month", "date", "time"]}
-            value={selectedDate}
-            onChange={handleDateChange}
-          />
-          <Paper style={{ padding: 5, margin: 5 }}>
-            <label forhtml="image">Upload Image</label>
-            <input
-              type="file"
-              onChange={(e) => {
-                setImage(e.target.files[0]);
-                // postPartyImg();
-              }}
+            <TextField
+              id="partyDescription"
+              inputRef={descriptionRef}
+              label="Party description"
+              placeholder="Party description"
+              multiline
+              rows="10"
+              fullWidth
+              variant="outlined"
             />
-          </Paper>
-          <Button
-            type="submit"
-            fullWidth
-            variant="contained"
-            color="primary"
-            className={classes.submit}
-            onClick={handleSubmit}
-            // disabled={loading}
-          >
-            Submit Party
-          </Button>
+            <TextField
+              id="partyLocation"
+              inputRef={locationRef}
+              label="Party location"
+              placeholder="Party location"
+              rows="1"
+              // fullWidth
+              variant="outlined"
+            />
+            <Grid container direction="row" justify="center">
+              <Grid item>
+                <TextField
+                  // id="djInput"
+                  inputRef={musicalGenreRef}
+                  label="Musical Genres"
+                  placeholder="Techno,House,Polka etc..."
+                  rows="1"
+                  variant="outlined"
+                />
+                <IconButton
+                  // aria-label="open drawer"
+                  onClick={() => {
+                    // console.log(djRef.current.value);
+                    setMusicalGenres([
+                      ...musicalGenres,
+                      musicalGenreRef.current.value,
+                    ]);
+                    musicalGenreRef.current.value = "";
+                    // console.log(djs);
+                  }}
+                  // edge="start"
+                >
+                  <FontAwesomeIcon icon={faPlusSquare} color="#ffffff" />
+                </IconButton>
+              </Grid>
+              <Grid item xs={6}>
+                <GenreList />
+              </Grid>
+            </Grid>
+            <Grid container direction="row" justify="center">
+              <Grid item>
+                <TextField
+                  // id="djInput"
+                  inputRef={djRef}
+                  label="Dj"
+                  placeholder="Dj"
+                  rows="1"
+                  variant="outlined"
+                />
+                <IconButton
+                  // aria-label="open drawer"
+                  onClick={() => {
+                    console.log(djRef.current.value);
+                    setDjs([...djs, djRef.current.value]);
+                    djRef.current.value = "";
+                    console.log(djs);
+                  }}
+                  // edge="start"
+                >
+                  <FontAwesomeIcon icon={faPlusSquare} color="#ffffff" />
+                </IconButton>
+              </Grid>
+              <Grid item xs={6}>
+                <DjsList />
+              </Grid>
+            </Grid>
+            <DateTimePicker
+              disablePast
+              variant="outlined"
+              fullWidth
+              // id="birthdate"
+              inputRef={partyDateRef}
+              // openTo="year"
+              // format="dd/MM/yyyy"
+              label="Party Date"
+              // views={["year", "month", "date", "time"]}
+              value={selectedDate}
+              onChange={handleDateChange}
+            />
+            <Paper style={{ padding: 5, margin: 5 }}>
+              <label forhtml="image">Upload Image</label>
+              <input
+                type="file"
+                onChange={(e) => {
+                  setImage(e.target.files[0]);
+                  // postPartyImg();
+                }}
+              />
+            </Paper>
+            <Button
+              type="submit"
+              fullWidth
+              variant="contained"
+              color="primary"
+              className={classes.submit}
+              onClick={handleSubmit}
+              // disabled={loading}
+            >
+              Submit Party
+            </Button>
+          </Grid>
         </form>
       </Grid>
     </div>

@@ -48,8 +48,8 @@ const reviewModel = require("../models/reviewsModel");
 
 router.get("/test", (req, res) => {
   // res.send({ msg: process.env.MY_TRY });
-  reviewModel
-    .updateMany({}, { $set: { display: true } })
+  userModel
+    .updateMany({}, { $set: { loggedIn: false } })
     .then((users) => {
       res.send(users);
     })
@@ -88,6 +88,7 @@ router.get(
         path: "reviews",
         populate: { path: "party" },
       })
+      .populate({ path: "own_parties" })
       .then((users) => {
         res.send(users);
       })
@@ -143,6 +144,7 @@ router.post(
               birthday: reqBirthday,
               reviews: reqReviews || [],
               own_parties: reqOwnParties || [],
+              loggedIn: true,
             });
             newUser
               .save()
@@ -204,14 +206,178 @@ router.post("/login", (req, res) => {
 //* --------------------------- END §SECTION LOGIN --------------------------- */
 
 //* ------------------------------ SECTION LOGOUT ----------------------------- */
-
-router.get("/logout", (req, res) => {
-  userModel
-    .findOneAndUpdate({ _id: req.body._id }, { $set: { loggedIn: false } })
-    .then((user) => res.send(user));
+//! [{ $set: { loggedIn: false } }]
+router.post("/logout", (req, res) => {
+  userModel.findOneAndUpdate(
+    { _id: req.body._id },
+    { $set: { loggedIn: false } },
+    { useFindAndModify: false },
+    (err, user) => {
+      if (err) {
+        res.send(err);
+      }
+      if (user) {
+        res.send(user);
+      }
+    }
+  );
 });
 
 //* --------------------------- END §SECTION LOGOUT -------------------------- */
+
+//* ---------------------------- SECTION EDIT USER --------------------------- */
+
+router.post(
+  "/edit",
+  passport.authenticate("jwt", { session: false }),
+  body("username").optional({ checkFalsy: true }).isLength({ min: 3 }),
+  body("email").optional({ checkFalsy: true }).isEmail(),
+  body("firstName").optional({ checkFalsy: true }).isLength({ min: 2 }),
+  body("lastName").optional({ checkFalsy: true }).isLength({ min: 2 }),
+  (req, res) => {
+    console.log(`999090909090909`, 999090909090909);
+    const { firstName, lastName, email, password, username } = req.body;
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
+    }
+    userModel.findOneAndUpdate(
+      { _id: req.user._id },
+      {
+        $set: {
+          username: username,
+          email: email,
+          firstName: firstName,
+          lastName: lastName,
+        },
+      },
+      {
+        useFindAndModify: false,
+        new: true,
+      },
+      (err, user) => {
+        if (err) {
+          console.log(err);
+          return res.json({ error: err });
+        }
+        if (user) {
+          console.log(user);
+          return res.json({ user: user });
+        }
+        if (!user & !err) {
+          console.log(`9095545`, 9095545);
+          return res.json({ shit: true });
+        }
+      }
+    );
+  }
+);
+// userModel.findOne({ _id: userId }, (err, user) => {
+//   if (err) {
+//     res.json({ error: err });
+//   }
+//   if (user) {
+//     if (req.body.username & (req.body.username !== "")) {
+//       user.username = req.body.username;
+//     }
+//     if (req.body.email & (req.body.email !== "")) {
+//       user.email = req.body.email;
+//     }
+//     if (req.body.firstName & (req.body.firstName !== "")) {
+//       user.firstName = req.body.firstName;
+//     }
+//     if (req.body.lastName & (req.body.lastName !== "")) {
+//       user.lastName = req.body.lastName;
+//     }
+
+//     user.save();
+//     res.json({ üüüüü: user });
+//   }
+// });
+// }
+// );
+// router.post(
+//   "/edit",
+//   passport.authenticate("jwt", { session: false }),
+//   body("username").optional({ checkFalsy: true }).isLength({ min: 3 }),
+//   body("email").optional({ checkFalsy: true }).isEmail(),
+//   body("firstName").optional({ checkFalsy: true }).isLength({ min: 2 }),
+//   body("lastName").optional({ checkFalsy: true }).isLength({ min: 2 }),
+//   (req, res) => {
+//     console.log(1);
+//     console.log(`req.user.username`, req.user.username);
+//     console.log(`req.body.username`, req.body.username);
+//     let reqEmail, reqUsername, reqFirstName, reqLastName;
+//     if (req.body.email & (req.body.email !== "")) {
+//       reqEmail = req.body.email;
+//     } else {
+//       reqEmail = req.user.email;
+//     }
+//     if (req.body.username & (req.body.username !== "")) {
+//       reqUsername = req.body.username;
+//     } else {
+//       reqUsername = req.user.username;
+//     }
+//     if (req.body.firstName & (req.body.firstName !== "")) {
+//       reqFirstName = req.body.firstName;
+//     } else {
+//       reqFirstName = req.user.firstName;
+//     }
+//     if (req.body.lastName & (req.body.lastName !== "")) {
+//       reqLastName = req.body.lastName;
+//     } else {
+//       reqLastName = req.user.lastName;
+//     }
+//     console.log(`reqUsername`, reqUsername);
+//     const xUser = userModel
+//       .updateOne(
+//         { _id: req.user._id },
+//         {
+//           $set: {
+//             email: reqEmail,
+//             username: reqUsername,
+//             firstName: reqFirstName,
+//             lastName: reqLastName,
+//           },
+//         },
+//         {
+//           multi: true,
+//           new: true,
+//         },
+//         (err, user) => {
+//           if (err) {
+//             res.json({ error: error });
+//           }
+//           if (user) {
+//             res.json({ user: user });
+//           }
+//         }
+//       )
+//       .then((user) => {
+//         console.log(11111, user);
+//       })
+//       .catch((err) => {
+//         console.error(err);
+//       });
+//   [
+//     {
+//       $set: {
+//         email: reqEmail,
+//         username: reqUsername,
+//         firstName: reqFirstName,
+//         lastName: reqLastName,
+//       },
+//     },
+//   ],
+//   { multi: true }
+// )
+// .catch((error) => {
+//   res.send(error);
+// });
+//   }
+// );
+
+//*------------------------- END §SECTION EDIT USER ------------------------- */
 //* ------------------------ END §SECTION POST ROUTES ------------------------ */
 //* --------------------------- END §SECTION ROUTES -------------------------- */
 

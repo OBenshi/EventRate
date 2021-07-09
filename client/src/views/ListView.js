@@ -1,16 +1,6 @@
-import React from "react";
-import { useEffect, useState } from "react";
-import { Grid, Typography } from "@material-ui/core";
+import { Grid } from "@material-ui/core";
+import React, { useEffect } from "react";
 import PartyInfoCard from "../components/PartyInfoCard";
-import {
-  BrowserRouter as Router,
-  Route,
-  Switch,
-  Link,
-  useHistory,
-  useParams,
-  useRouteMatch,
-} from "react-router-dom";
 import { useParty } from "../Contexts/PartyContext";
 import { useSearch } from "../Contexts/SearchContext";
 function ListView(props) {
@@ -26,20 +16,34 @@ function ListView(props) {
   }, []);
   return (
     <div>
-      <Typography variant="h1" color="textPrimary">
+      {/* <Typography variant="h1" color="textPrimary">
         listView
-      </Typography>
+      </Typography> */}
       <Grid container align="center" spacing={3}>
         {parties.length &&
-          parties.map((party) => {
-            if (party.name.toUpperCase().includes(searchTerm.toUpperCase())) {
-              return (
-                <Grid item xs={12} key={party._id}>
-                  <PartyInfoCard party={party} />
-                </Grid>
-              );
-            }
-          })}
+          parties
+            .sort((a, b) => {
+              const dateA = a.date;
+              const dateB = b.date;
+              if (dateA < dateB) {
+                return 1;
+              }
+              if (dateA > dateB) {
+                return -1;
+              }
+              return 0;
+            })
+            .map((party) => {
+              if (party.name.toUpperCase().includes(searchTerm.toUpperCase())) {
+                if (party.display === true) {
+                  return (
+                    <Grid item xs={12} key={party._id}>
+                      <PartyInfoCard party={party} />
+                    </Grid>
+                  );
+                }
+              }
+            })}
       </Grid>{" "}
     </div>
   );

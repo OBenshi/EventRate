@@ -1,15 +1,49 @@
 import { makeStyles, fade } from "@material-ui/core/styles";
 // import { Fade } from "@material-ui/core";
 import { createMuiTheme } from "@material-ui/core";
-
+import "@fontsource/major-mono-display";
 import cork from "../../imgs/josephine-bredehoft-KsAo8ouBn8A-unsplash.jpg";
 const drawerWidth = "100%";
 const colors = ["yellow", "pink", "green", "orange"];
 const randomColor = colors[Math.floor(Math.random() * colors.length)];
 
-export const theme = createMuiTheme({});
+export const theme = createMuiTheme({
+  palette: {
+    primary: {
+      light: "#FF9D00",
+      main: "#FF7600",
+      dark: "#FF3C00",
+    },
+    secondary: {
+      light: "#4ef500",
+      main: "#3EC300",
+      dark: "#34a300",
+    },
+    background: {
+      default: "#000000",
+    },
+  },
+  typography: {
+    fontFamily: '"Roboto", "Helvetica", "Arial", sans-serif',
+  },
+});
+// theme.typography.h1.fontFamily =
+//   '"Major Mono Display","Helvetica","Arial",sans-serif';
+// theme.typography.h2.fontFamily =
+//   '"Major Mono Display","Helvetica","Arial",sans-serif';
+// theme.typography.h3.fontFamily =
+//   '"Major Mono Display","Helvetica","Arial",sans-serif';
+// theme.typography.h4.fontFamily =
+//   '"Major Mono Display","Helvetica","Arial",sans-serif';
+// theme.typography.h5.fontFamily =
+//   '"Major Mono Display","Helvetica","Arial",sans-serif';
+// theme.typography.h6.fontFamily =
+//   '"Major Mono Display","Helvetica","Arial",sans-serif';
 
 export const useStyles = makeStyles((theme) => ({
+  rootOfRoots: {
+    // display: "flex",
+  },
   partyCard: {
     maxWidth: "98%",
   },
@@ -19,7 +53,10 @@ export const useStyles = makeStyles((theme) => ({
   },
   NavRoot: {
     flexGrow: 1,
-    marginBottom: theme.spacing(7),
+    marginBottom: theme.spacing(12),
+  },
+  navlink: {
+    textDecoration: "none",
   },
   menuButton: {
     marginRight: theme.spacing(2),
@@ -113,6 +150,9 @@ export const useStyles = makeStyles((theme) => ({
   root: {
     display: "flex",
   },
+  AppBar2: {
+    // backgroundColor: "",
+  },
   appBar: {
     transition: theme.transitions.create(["margin", "width"], {
       easing: theme.transitions.easing.sharp,
@@ -134,7 +174,7 @@ export const useStyles = makeStyles((theme) => ({
     display: "none",
   },
   drawer: {
-    width: drawerWidth,
+    width: drawerWidth * 0.5,
     flexShrink: 0,
   },
   drawerPaper: {
@@ -176,5 +216,23 @@ export const useStyles = makeStyles((theme) => ({
   },
   reviewEditText: {
     width: "100%",
+  },
+  partiesScroll: {
+    display: "flex",
+    flexDirection: "row",
+    flexWrap: "noWrap",
+    overflowY: "scroll",
+  },
+  partyDetailsRoot: {
+    marginLeft: theme.spacing(2),
+    marginRight: theme.spacing(2),
+    // display: "flex",
+    // flexDirection: "column",
+    // alignItems: "center",
+    // alignContent: "center",
+    // justifyContent: "center",
+  },
+  reviewsContainer: {
+    marginTop: theme.spacing(5),
   },
 }));
