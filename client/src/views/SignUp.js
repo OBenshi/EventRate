@@ -85,6 +85,7 @@ export default function SignUp() {
         reviews: [],
         own_parties: [],
       };
+      console.log(newUser);
       fetch("http://localhost:5000/users/signup", {
         method: "post",
         headers: {
@@ -98,7 +99,7 @@ export default function SignUp() {
           if (!data.errors) {
             setWithExpiry("token", data.token, 28800000);
             setUserInfo(data.user);
-            history.push("/parties");
+            history.push("/");
           } else {
             data.errors.forEach((error) => {
               if (error.param === "username") {
@@ -112,9 +113,9 @@ export default function SignUp() {
           }
         })
         .catch((err) => {
-          setLoading(false);
           setOtherError(err);
           console.log(err);
+          setLoading(false);
         });
     }
     setLoading(false);
@@ -231,6 +232,15 @@ export default function SignUp() {
                 type="password"
                 id="password"
                 inputRef={passwordRef}
+                onChange={() => {
+                  if (passwordRef.current.value.length < 6) {
+                    setPasswordError(
+                      "Password must be at least 6 characters long"
+                    );
+                  } else {
+                    setPasswordError(null);
+                  }
+                }}
                 autoComplete="current-password"
               />
             </Grid>
@@ -244,6 +254,21 @@ export default function SignUp() {
                 type="password"
                 id="passwordConfirm"
                 inputRef={passwordConfirmRef}
+                onChange={() => {
+                  if (
+                    passwordRef.current.value !==
+                      passwordConfirmRef.current.value &&
+                    passwordError === null
+                  ) {
+                    setPasswordError(`Passwords do not match`);
+                  } else if (
+                    passwordRef.current.value.length > 6 &&
+                    passwordConfirmRef.current.value ===
+                      passwordRef.current.value
+                  ) {
+                    setPasswordError(null);
+                  }
+                }}
                 // autoComplete="current-password"
               />
             </Grid>

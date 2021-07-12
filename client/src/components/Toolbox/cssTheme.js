@@ -25,6 +25,10 @@ export const theme = createMuiTheme({
   },
   typography: {
     fontFamily: '"Roboto", "Helvetica", "Arial", sans-serif',
+    h2: {
+      fontFamily:
+        '"Major Mono Display","Roboto", "Helvetica", "Arial", sans-serif',
+    },
   },
 });
 // theme.typography.h1.fontFamily =
@@ -43,6 +47,7 @@ export const theme = createMuiTheme({
 export const useStyles = makeStyles((theme) => ({
   rootOfRoots: {
     // display: "flex",
+    width: "100%",
   },
   partyCard: {
     maxWidth: "98%",

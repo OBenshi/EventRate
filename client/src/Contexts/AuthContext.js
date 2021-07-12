@@ -69,6 +69,10 @@ export function AuthProvider({ children }) {
     }
   };
 
+  const emailRegex = new RegExp(
+    '^(([^<>()[]\\.,;:sW@"]+(.[^<>()[]\\.,;:s@"]+)*)|(".+"))@(([[0-9]{1,3}.[0-9]{1,3}.[0-9]{1,3}.[0-9]{1,3}])|(([a-zA-Z-0-9]+.)+[a-zA-Z]{2,}))$'
+  );
+
   useEffect(() => {
     getUserInfo();
     isUserLoggedIn();
@@ -82,6 +86,7 @@ export function AuthProvider({ children }) {
     setWithExpiry,
     getWithExpiry,
     getUserInfo,
+    emailRegex,
   };
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }

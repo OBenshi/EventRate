@@ -59,19 +59,19 @@ router.get("/test", (req, res) => {
 
 //*----------------------- SECTION GET ALL USERS ----------------------------- */
 
-router.get("/all", (req, res) => {
-  userModel
-    .find({})
-    .populate({
-      path: "reviews",
-      select: ["_id", "party", "rating"],
-      populate: { path: "party", select: ["_id", "name"] },
-    })
-    .then((users) => {
-      res.send(users);
-    })
-    .catch((err) => res.send(err));
-});
+// router.get("/all", (req, res) => {
+//   userModel
+//     .find({})
+//     .populate({
+//       path: "reviews",
+//       select: ["_id", "party", "rating"],
+//       populate: { path: "party", select: ["_id", "name"] },
+//     })
+//     .then((users) => {
+//       res.send(users);
+//     })
+//     .catch((err) => res.send(err));
+// });
 
 //* --------------------- END §SECTION GET ALL USERS --------------------------------- */
 
@@ -108,9 +108,13 @@ router.get(
 
 router.post(
   "/signup",
-  body("username").isLength({ min: 3 }),
-  body("email").isEmail(),
-  body("password").isLength({ min: 8 }),
+  body("username")
+    .isLength({ min: 3 })
+    .withMessage("Username must be at least 3 chars long"),
+  body("email").isEmail().withMessage("Please enter a valid email address"),
+  body("password")
+    .isLength({ min: 8 })
+    .withMessage("Password must be at least 8 chars long"),
   (req, res) => {
     //TODO error handling
     const reqEmail = req.body.email;
@@ -171,37 +175,61 @@ router.post(
 
 //*------------------------------ SECTION LOGIN --------------------------------- */
 
-router.post("/login", (req, res) => {
-  const email = req.body.email;
-  const password = req.body.password;
-  userModel.findOne({ email: email }, (err, user) => {
-    if (err) {
-      res.json({ error: "Email does not exist" });
-    } else {
-      bcrypt.compare(password, user.password, (err, result) => {
-        if (err) {
-          res.json({ error: err });
-        }
-        if (result) {
-          const options = {
-            id: user._id,
-          };
-          const token = jwt.sign(options, secretOrKey, { expiresIn: "8h" });
-          res.json({
-            success: true,
-            token: token,
+router.post(
+  "/login",
+  body("email").isEmail().withMessage("Not a valid Email address"),
+  body("password")
+    .isLength({ min: 6 })
+    .withMessage("Password must be at least 6 chars long"),
+  (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
+    }
+    const email = req.body.email;
+    const password = req.body.password;
+
+    userModel
+      .findOne({ email: email }, (err, user) => {
+        if (!user) {
+          return res.json({
+            errors: [{ msg: "no user found", param: "other" }],
           });
-        } else {
-          res.json({ error: "password does not match" });
         }
+        if (err) {
+          return res.json({ errors: [{ msg: err, param: "email" }] });
+        } else {
+          bcrypt.compare(password, user.password, (err, result) => {
+            if (err) {
+              res.json({ errors: [{ msg: err, param: "password" }] });
+            }
+            if (result) {
+              const options = {
+                id: user._id,
+              };
+              const token = jwt.sign(options, secretOrKey, { expiresIn: "8h" });
+              res.json({
+                success: true,
+                token: token,
+              });
+            } else {
+              res.json({
+                errors: [{ msg: "password does not match", param: "password" }],
+              });
+            }
+          });
+        }
+        if (user) {
+          user.loggedIn = true;
+          user.save();
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+        return res.json({ errors: [{ msg: err, param: "other" }] });
       });
-    }
-    if (user) {
-      user.loggedIn = true;
-      user.save();
-    }
-  });
-});
+  }
+);
 
 //* --------------------------- END §SECTION LOGIN --------------------------- */
 
