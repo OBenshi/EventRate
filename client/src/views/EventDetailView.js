@@ -20,7 +20,7 @@ import { useStyles } from "../components/Toolbox/cssTheme";
 import { webColors } from "../components/Toolbox/webcolors";
 import { useAuth } from "../Contexts/AuthContext";
 import { useParty } from "../Contexts/PartyContext";
-const serverURL = require("../config");
+const { serverURL } = require("../config");
 
 function EventDetailView(params) {
   const { refresh, setRefresh, setPartyToEdit, partyToEdit } = useParty();
