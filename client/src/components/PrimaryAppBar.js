@@ -260,7 +260,12 @@ export default function PrimaryAppBar(props) {
               <IconButton aria-label="back" onClick={history.goBack}>
                 <FontAwesomeIcon icon={faBackward} />
               </IconButton>
-              <Typography className={classes.title} variant="h6" noWrap>
+              <Typography
+                className={classes.title}
+                variant="h6"
+                align="center"
+                noWrap
+              >
                 EventRate
               </Typography>
               {history.location.pathname === "/parties" && (

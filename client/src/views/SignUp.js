@@ -6,12 +6,13 @@ import {
   Grid,
   TextField,
   Typography,
+  Link,
 } from "@material-ui/core";
 import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
 import Alert from "@material-ui/lab/Alert";
 import { DatePicker } from "@material-ui/pickers";
 import React, { useRef, useState } from "react";
-import { Link, useHistory } from "react-router-dom";
+import { Link as RouterLink, useHistory } from "react-router-dom";
 import Copyright from "../components/copyright";
 import { useStyles } from "../components/Toolbox/cssTheme";
 import { useAuth } from "../Contexts/AuthContext";
@@ -285,7 +286,7 @@ export default function SignUp() {
           </Button>
           <Grid container justify="flex-end">
             <Grid item>
-              <Link href="#" variant="body2">
+              <Link component={RouterLink} to="/signin" variant="body2">
                 Already have an account? Sign in
               </Link>
             </Grid>

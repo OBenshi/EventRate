@@ -107,6 +107,7 @@ export default function ManageProfile() {
           console.log(data);
           if (!data.errors) {
             setUserInfo(data.user);
+            history.push("/");
           } else {
             data.errors.forEach((error) => {
               if (error.param === "username") {
@@ -135,14 +136,28 @@ export default function ManageProfile() {
         <Avatar className={classes.avatar}>
           <LockOutlinedIcon />
         </Avatar>
-        <Typography component="h1" variant="h5">
+        <Typography component="h1" variant="h5" color="primary">
           Manage Profile
+        </Typography>
+        <Typography
+          component="h5"
+          variant="h5"
+          color="secondary"
+          align="center"
+        >
+          Leave blank to keep current settings
         </Typography>
         {otherError && <Alert severity="error">{otherError}</Alert>}
         <form className={classes.form} onSubmit={handleSubmit} noValidate>
           <Grid container spacing={2}>
             <Grid item xs={12}>
               {usernameError && <Alert severity="error">{usernameError}</Alert>}
+              <Typography>
+                Your current username address is&nbsp;
+                <Typography component="span" color="secondary">
+                  {userInfo.username}
+                </Typography>
+              </Typography>
               <TextField
                 variant="outlined"
                 required

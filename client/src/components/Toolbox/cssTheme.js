@@ -29,6 +29,22 @@ export const theme = createMuiTheme({
       fontFamily:
         '"Major Mono Display","Roboto", "Helvetica", "Arial", sans-serif',
     },
+    h3: {
+      fontFamily:
+        '"Major Mono Display","Roboto", "Helvetica", "Arial", sans-serif',
+    },
+    h4: {
+      fontFamily:
+        '"Major Mono Display","Roboto", "Helvetica", "Arial", sans-serif',
+    },
+    h5: {
+      fontFamily:
+        '"Major Mono Display","Roboto", "Helvetica", "Arial", sans-serif',
+    },
+    h6: {
+      fontFamily:
+        '"Major Mono Display","Roboto", "Helvetica", "Arial", sans-serif',
+    },
   },
 });
 // theme.typography.h1.fontFamily =

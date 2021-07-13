@@ -15,6 +15,7 @@
 //==================================================
 
 import React, { useEffect, useState, useRef } from "react";
+import { Link, useHistory } from "react-router-dom";
 import { useStyles } from "../components/Toolbox/cssTheme";
 import {
   TextField,
@@ -35,6 +36,7 @@ import { DateTimePicker } from "@material-ui/pickers";
 function SubmitEvent() {
   const classes = useStyles();
   const { isUser, userInfo, token } = useAuth();
+  const history = useHistory();
   const { djs, setDjs, musicalGenres, setMusicalGenres } = useParty();
   // setDjs([]);
   const djRef = useRef();
@@ -81,6 +83,7 @@ function SubmitEvent() {
       .then((res) => res.json())
       .then((data) => {
         console.log(`data`, data);
+        history.push(`/parties/${newParty.name}`);
       })
       .catch((err) => {
         // setLoading(false);

@@ -48,8 +48,8 @@ export default function SignIn() {
         if (!data.errors) {
           setWithExpiry("token", data.token, 28800000);
           setIsUser(true);
-          // history.push("/parties");
-          history.go(-1);
+          history.push("/");
+          // history.go(-1);
           setLoading(false);
           setRefresh(!refresh);
           // window.location.reload();
