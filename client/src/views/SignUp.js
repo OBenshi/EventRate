@@ -16,6 +16,7 @@ import { Link as RouterLink, useHistory } from "react-router-dom";
 import Copyright from "../components/copyright";
 import { useStyles } from "../components/Toolbox/cssTheme";
 import { useAuth } from "../Contexts/AuthContext";
+const { serverURL } = require("../config");
 
 export default function SignUp() {
   const classes = useStyles();
@@ -87,7 +88,7 @@ export default function SignUp() {
         own_parties: [],
       };
       console.log(newUser);
-      fetch("http://localhost:5000/users/signup", {
+      fetch(`${serverURL}/users/signup`, {
         method: "post",
         headers: {
           "Content-Type": "application/json",

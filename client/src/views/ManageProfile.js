@@ -14,6 +14,7 @@ import { useHistory } from "react-router-dom";
 import Copyright from "../components/copyright";
 import { useStyles } from "../components/Toolbox/cssTheme";
 import { useAuth } from "../Contexts/AuthContext";
+const serverURL = require("../config");
 export default function ManageProfile() {
   const classes = useStyles();
   const { userInfo, setUserInfo, setWithExpiry, token } = useAuth();
@@ -94,7 +95,7 @@ export default function ManageProfile() {
       };
       console.log(`updatedUser`, updatedUser);
 
-      fetch("http://localhost:5000/users/edit", {
+      fetch(`${serverURL}/users/edit`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

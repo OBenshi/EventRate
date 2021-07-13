@@ -39,6 +39,7 @@ import { faPaperPlane } from "@fortawesome/free-solid-svg-icons";
 import { useAuth } from "../Contexts/AuthContext";
 import { useParty } from "../Contexts/PartyContext";
 import { useStyles } from "./Toolbox/cssTheme";
+const { serverURL } = require("../config");
 
 const StyledRating = withStyles({
   iconFilled: {
@@ -77,7 +78,7 @@ export default function MakeReview(props) {
       rating: rating,
       text: textRef.current.value,
     };
-    fetch("http://localhost:5000/reviews/new", {
+    fetch(`${serverURL}/reviews/new`, {
       method: "post",
       headers: {
         "Content-Type": "application/json",
@@ -88,7 +89,6 @@ export default function MakeReview(props) {
       .then((res) => res.json())
       .then((things) => {
         console.log(things);
-
         // history.push(`/parties/${party.name}`);
         setRefresh(!refresh);
       })

@@ -7,6 +7,7 @@ import {
   useHistory,
   useRouteMatch,
 } from "react-router-dom";
+const { serverURL } = require("../config");
 const AuthContext = React.createContext();
 
 export const useAuth = () => useContext(AuthContext);
@@ -41,7 +42,7 @@ export function AuthProvider({ children }) {
       const config = {
         headers: { Authorization: `Bearer ${token}` },
       };
-      fetch("http://localhost:5000/users/profile", config)
+      fetch(`${serverURL}/users/profile`, config)
         .then((res) => res.json())
         .then((data) => {
           console.log("I'm data from AuthContext", data[0]);

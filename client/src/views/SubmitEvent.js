@@ -32,6 +32,7 @@ import { useParty } from "../Contexts/PartyContext";
 import DjsList from "../components/DjList";
 import GenreList from "../components/GenreList";
 import { DateTimePicker } from "@material-ui/pickers";
+const { serverURL } = require("../config.js");
 
 function SubmitEvent() {
   const classes = useStyles();
@@ -72,7 +73,7 @@ function SubmitEvent() {
       date: selectedDate.toISOString(),
       display: true,
     };
-    fetch("http://localhost:5000/parties/new", {
+    fetch(`${serverURL}/parties/new`, {
       method: "post",
       headers: {
         "Content-Type": "application/json",

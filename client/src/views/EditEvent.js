@@ -32,6 +32,7 @@ import GenreList from "../components/GenreList";
 import { useStyles } from "../components/Toolbox/cssTheme";
 import { useAuth } from "../Contexts/AuthContext";
 import { useParty } from "../Contexts/PartyContext";
+const { serverURL } = require("../config");
 function EditEvent() {
   const classes = useStyles();
   const { isUser, userInfo, token } = useAuth();
@@ -81,7 +82,7 @@ function EditEvent() {
       date: selectedDate.toISOString(),
       display: true,
     };
-    fetch("http://localhost:5000/parties/edit", {
+    fetch(`${serverURL}/parties/edit`, {
       method: "post",
       headers: {
         "Content-Type": "application/json",

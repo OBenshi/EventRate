@@ -20,6 +20,8 @@ import { useStyles } from "../components/Toolbox/cssTheme";
 import { webColors } from "../components/Toolbox/webcolors";
 import { useAuth } from "../Contexts/AuthContext";
 import { useParty } from "../Contexts/PartyContext";
+const serverURL = require("../config");
+
 function EventDetailView(params) {
   const { refresh, setRefresh, setPartyToEdit, partyToEdit } = useParty();
   const { partyName } = useParams();
@@ -54,7 +56,7 @@ function EventDetailView(params) {
     const reviewToDelete = {
       _id: party._id,
     };
-    fetch("http://localhost:5000/parties/delete", {
+    fetch(`${serverURL}/parties/delete`, {
       method: "post",
       headers: {
         "Content-Type": "application/json",
@@ -73,7 +75,7 @@ function EventDetailView(params) {
   };
 
   useEffect(() => {
-    fetch(`http://localhost:5000/parties/${partyName}`)
+    fetch(`${serverURL}/parties/${partyName}`)
       .then((res) => res.json())
       .then((data) => {
         setReviews(data[0].reviews);

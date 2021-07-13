@@ -3,12 +3,13 @@ import React, { useEffect } from "react";
 import PartyInfoCard from "../components/PartyInfoCard";
 import { useParty } from "../Contexts/PartyContext";
 import { useSearch } from "../Contexts/SearchContext";
+const { serverURL } = require("../config");
 function ListView(props) {
   const { parties, setParties, refresh } = useParty();
   const { searchTerm } = useSearch();
 
   useEffect(() => {
-    fetch("http://localhost:5000/parties/all")
+    fetch(`${serverURL}/parties/all`)
       .then((res) => res.json())
       .then((data) => {
         setParties(data);

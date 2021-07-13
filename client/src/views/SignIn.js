@@ -16,6 +16,7 @@ import Copyright from "../components/copyright";
 import { useStyles } from "../components/Toolbox/cssTheme";
 import { useAuth } from "../Contexts/AuthContext";
 import { useParty } from "../Contexts/PartyContext";
+const { serverURL } = require("../config.js");
 
 export default function SignIn() {
   const { isUser, setIsUser, setWithExpiry, emailRegex } = useAuth();
@@ -32,7 +33,7 @@ export default function SignIn() {
     event.preventDefault();
     setLoading(true);
     console.log(passwordRef.current.value);
-    fetch("http://localhost:5000/users/login", {
+    fetch(`${serverURL}/users/login`, {
       method: "post",
       headers: {
         "Content-Type": "application/json",

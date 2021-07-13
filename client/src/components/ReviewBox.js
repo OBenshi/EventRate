@@ -23,6 +23,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 // import { faPaperPlane } from "@fortawesome/free-solid-svg-icons";
 import { useParty } from "../Contexts/PartyContext";
+const { serverURL } = require("../config");
 const ReviewBox = (props) => {
   const classes = useStyles();
   const review = props.review;
@@ -57,7 +58,7 @@ const ReviewBox = (props) => {
       rating: rating,
       text: reviewText,
     };
-    fetch("http://localhost:5000/reviews/edit", {
+    fetch(`${serverURL}/reviews/edit`, {
       method: "post",
       headers: {
         "Content-Type": "application/json",
