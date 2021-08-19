@@ -1,5 +1,5 @@
-import React, { useEffect, useState, useRef } from "react";
-import axios from "axios";
+import React, { useEffect, useState, useRef } from 'react';
+import axios from 'axios';
 import {
   AppBar,
   Toolbar,
@@ -13,19 +13,23 @@ import {
   Drawer,
   Grid,
   List,
+  Icon,
   useScrollTrigger,
-} from "@material-ui/core";
-import InboxIcon from "@material-ui/icons/MoveToInbox";
-import FavoriteIcon from "@material-ui/icons/Favorite";
-import MenuIcon from "@material-ui/icons/Menu";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faBackward } from "@fortawesome/free-solid-svg-icons";
-import SearchIcon from "@material-ui/icons/Search";
-import { NavLink, useHistory, useRouteMatch } from "react-router-dom";
-import { useStyles } from "./Toolbox/cssTheme";
-import { useAuth } from "../Contexts/AuthContext";
+} from '@material-ui/core';
+import InboxIcon from '@material-ui/icons/MoveToInbox';
+import FavoriteIcon from '@material-ui/icons/Favorite';
+import MenuIcon from '@material-ui/icons/Menu';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faBackward, faUserPlus } from '@fortawesome/free-solid-svg-icons';
+import SearchIcon from '@material-ui/icons/Search';
+import { NavLink, useHistory, useRouteMatch } from 'react-router-dom';
+import { useStyles } from './Toolbox/cssTheme';
+import { useAuth } from '../Contexts/AuthContext';
 // import HandleSearch from "./HandleSearch";
-import { useSearch } from "../Contexts/SearchContext";
+import { useSearch } from '../Contexts/SearchContext';
+import HomeTwoToneIcon from '@material-ui/icons/HomeTwoTone';
+import SpeakerGroupTwoToneIcon from '@material-ui/icons/SpeakerGroup';
+import VpnKeyTwoToneIcon from '@material-ui/icons/VpnKeyTwoTone';
 export default function PrimaryAppBar(props) {
   const classes = useStyles();
   const { isUser, setIsUser, token, userInfo, setUserInfo } = useAuth();
@@ -61,17 +65,17 @@ export default function PrimaryAppBar(props) {
     setUserInfo(null);
     setIsUser(false);
     // setLoading(true);
-    window.localStorage.removeItem("token");
-    history.push("/");
+    window.localStorage.removeItem('token');
+    history.push('/');
     await axios
-      .post("http://localhost:5000/users/logout", user)
-      .then((u8u) => console.log("u8u", u8u.data));
+      .post('http://localhost:5000/users/logout', user)
+      .then((u8u) => console.log('u8u', u8u.data));
   };
 
   const toggleDrawer = (open) => (event) => {
     if (
-      event.type === "keydown" &&
-      (event.key === "Tab" || event.key === "Shift")
+      event.type === 'keydown' &&
+      (event.key === 'Tab' || event.key === 'Shift')
     ) {
       return;
     }
@@ -81,75 +85,74 @@ export default function PrimaryAppBar(props) {
   const list = (anchor) => (
     <div
       // className={classes.list}
-      role="presentation"
+      role='presentation'
       onClick={toggleDrawer(anchor, false)}
-      onKeyDown={toggleDrawer(anchor, false)}
-    >
+      onKeyDown={toggleDrawer(anchor, false)}>
       <List>
         <NavLink
           className={classes.navlink}
-          to="/"
+          to='/'
           isActive={(match, location) => {
             if (!match) {
               return false;
             }
             const eventID = parseInt(match.params.eventID);
             return !isNaN(eventID) && eventID % 2 === 1;
-          }}
-        >
-          <ListItem button key={"home"}>
+          }}>
+          <ListItem button key={'home'}>
             <ListItemIcon>
-              <InboxIcon />
+              <HomeTwoToneIcon />
             </ListItemIcon>
-            <ListItemText primary={"home"} />
-          </ListItem>{" "}
+            <ListItemText primary={'home'} />
+          </ListItem>{' '}
         </NavLink>
         <NavLink
           className={classes.navlink}
-          to="/parties"
+          to='/parties'
           isActive={(match, location) => {
             if (!match) {
               return false;
             }
             const eventID = parseInt(match.params.eventID);
             return !isNaN(eventID) && eventID % 2 === 1;
-          }}
-        >
-          <ListItem button key={"parties"}>
+          }}>
+          <ListItem button key={'parties'}>
             <ListItemIcon>
-              <InboxIcon />
+              {/* <IconButton aria-label='back' onClick={history.goBack}>
+                <FontAwesomeIcon icon={faBackward} />
+              </IconButton> */}
+              <SpeakerGroupTwoToneIcon />
             </ListItemIcon>
-            <ListItemText primary={"parties"} />
-          </ListItem>{" "}
+            <ListItemText primary={'parties'} />
+          </ListItem>{' '}
         </NavLink>
         {!isUser && (
           <NavLink
             className={classes.navlink}
-            to="/signup"
+            to='/signup'
             isActive={(match, location) => {
               if (!match) {
                 return false;
               }
               const eventID = parseInt(match.params.eventID);
               return !isNaN(eventID) && eventID % 2 === 1;
-            }}
-          >
-            <ListItem button key={"signup"}>
+            }}>
+            <ListItem button key={'signup'}>
               <ListItemIcon>
-                <InboxIcon />
+                <FontAwesomeIcon icon={faUserPlus} />
               </ListItemIcon>
-              <ListItemText primary={"Sign up"} />
+              <ListItemText primary={'Sign up'} />
             </ListItem>
           </NavLink>
         )}
         {!isUser && (
-          <NavLink className={classes.navlink} to="/signin">
-            <ListItem button key={"signin"}>
+          <NavLink className={classes.navlink} to='/signin'>
+            <ListItem button key={'signin'}>
               <ListItemIcon>
-                <InboxIcon />
+                <VpnKeyTwoToneIcon />
               </ListItemIcon>
-              <ListItemText primary={"Sign in"} />
-            </ListItem>{" "}
+              <ListItemText primary={'Sign in'} />
+            </ListItem>{' '}
           </NavLink>
         )}
       </List>
@@ -158,13 +161,13 @@ export default function PrimaryAppBar(props) {
       {userInfo && (
         <List>
           <NavLink to={`/${userInfo.username}`} className={classes.navlink}>
-            <ListItem button key={"favourites"}>
+            <ListItem button key={'favourites'}>
               <ListItemIcon>
                 <FavoriteIcon />
               </ListItemIcon>
-              <ListItemText primary={"My Parties"} />
+              <ListItemText primary={'My Parties'} />
             </ListItem>
-          </NavLink>{" "}
+          </NavLink>{' '}
           <NavLink
             className={classes.navlink}
             to={`/${userInfo.username}/manageprofile`}
@@ -174,28 +177,27 @@ export default function PrimaryAppBar(props) {
               }
               const eventID = parseInt(match.params.eventID);
               return !isNaN(eventID) && eventID % 2 === 1;
-            }}
-          >
-            <ListItem button key={"dashboard"}>
+            }}>
+            <ListItem button key={'dashboard'}>
               <ListItemIcon>
                 <InboxIcon />
               </ListItemIcon>
-              <ListItemText primary={"Manage profile"} />
+              <ListItemText primary={'Manage profile'} />
             </ListItem>
           </NavLink>
-          <NavLink className={classes.navlink} to="/submitevent">
-            <ListItem button key={"SubmitAParty"}>
+          <NavLink className={classes.navlink} to='/submitevent'>
+            <ListItem button key={'SubmitAParty'}>
               <ListItemIcon>
                 <InboxIcon />
               </ListItemIcon>
-              <ListItemText primary={"Submit a Party"} />
-            </ListItem>{" "}
+              <ListItemText primary={'Submit a Party'} />
+            </ListItem>{' '}
           </NavLink>
-          <ListItem button key={"logout"} onClick={handleLogout}>
+          <ListItem button key={'logout'} onClick={handleLogout}>
             <ListItemIcon>
               <InboxIcon />
             </ListItemIcon>
-            <ListItemText primary={"Logout"} />
+            <ListItemText primary={'Logout'} />
           </ListItem>
         </List>
       )}
@@ -227,20 +229,19 @@ export default function PrimaryAppBar(props) {
   return (
     <div className={classes.NavRoot}>
       <ElevationScroll {...props}>
-        <AppBar position="fixed" className={classes.AppBar2}>
+        <AppBar position='fixed' className={classes.AppBar2}>
           <Toolbar>
-            <Grid container align="right">
+            <Grid container align='right'>
               <IconButton
-                edge="start"
+                edge='start'
                 className={classes.menuButton}
-                color="inherit"
-                aria-label="open drawer"
-                onClick={toggleDrawer(true)}
-              >
+                color='inherit'
+                aria-label='open drawer'
+                onClick={toggleDrawer(true)}>
                 <MenuIcon />
-              </IconButton>{" "}
+              </IconButton>{' '}
               <Drawer
-                anchor={"left"}
+                anchor={'left'}
                 open={drawerState}
                 onClose={toggleDrawer(false)}
                 // transitionDuration={5000000000000000000000000000000000000}
@@ -250,48 +251,46 @@ export default function PrimaryAppBar(props) {
                 //   exit: 9999999999999,
                 // }}
                 // className={classes.drawerList}
-                elevation={16}
-              >
-                <Typography variant="h6" align="center" noWrap color="primary">
+                elevation={16}>
+                <Typography variant='h6' align='center' noWrap color='primary'>
                   EventRate
                 </Typography>
                 {list()}
               </Drawer>
-              <IconButton aria-label="back" onClick={history.goBack}>
+              <IconButton aria-label='back' onClick={history.goBack}>
                 <FontAwesomeIcon icon={faBackward} />
               </IconButton>
               <Typography
                 className={classes.title}
-                variant="h6"
-                align="center"
-                noWrap
-              >
+                variant='h6'
+                align='center'
+                noWrap>
                 EventRate
               </Typography>
-              {history.location.pathname === "/parties" && (
+              {history.location.pathname === '/parties' && (
                 <div className={classes.search}>
                   <div className={classes.searchIcon}>
                     <SearchIcon />
                   </div>
                   <InputBase
-                    placeholder="Find a party…"
+                    placeholder='Find a party…'
                     classes={{
                       root: classes.inputRoot,
                       input: classes.inputInput,
                     }}
-                    id="searchBar"
-                    name="searchBar"
-                    key={"searchBar"}
+                    id='searchBar'
+                    name='searchBar'
+                    key={'searchBar'}
                     value={searchTerm}
-                    type="text"
+                    type='text'
                     inputRef={searchRef}
-                    inputProps={{ "aria-label": "search" }}
+                    inputProps={{ 'aria-label': 'search' }}
                     onChange={handleSearch}
                     autoFocus
                   />
                 </div>
               )}
-            </Grid>{" "}
+            </Grid>{' '}
           </Toolbar>
         </AppBar>
       </ElevationScroll>
