@@ -7,26 +7,26 @@ import {
   TextField,
   Typography,
   Link,
-} from "@material-ui/core";
-import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
-import Alert from "@material-ui/lab/Alert";
-import { DatePicker } from "@material-ui/pickers";
-import React, { useRef, useState } from "react";
-import { Link as RouterLink, useHistory } from "react-router-dom";
-import Copyright from "../components/copyright";
-import { useStyles } from "../components/Toolbox/cssTheme";
-import { useAuth } from "../Contexts/AuthContext";
-const { serverURL } = require("../config");
+} from '@material-ui/core';
+import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
+import Alert from '@material-ui/lab/Alert';
+import { DatePicker } from '@material-ui/pickers';
+import React, { useRef, useState } from 'react';
+import { Link as RouterLink, useHistory } from 'react-router-dom';
+import Copyright from '../components/copyright';
+import { useStyles } from '../components/Toolbox/cssTheme';
+import { useAuth } from '../Contexts/AuthContext';
+const { serverURL } = require('../config');
 
 export default function SignUp() {
   const classes = useStyles();
   const { userInfo, setUserInfo, setWithExpiry } = useAuth();
-  const [usernameError, setUsernameError] = useState("");
-  const [emailError, setEmailError] = useState("");
-  const [passwordError, setPasswordError] = useState("");
-  const [firstNameError, setFirstNameError] = useState("");
-  const [lastNameError, setLastNameError] = useState("");
-  const [otherError, setOtherError] = useState("");
+  const [usernameError, setUsernameError] = useState('');
+  const [emailError, setEmailError] = useState('');
+  const [passwordError, setPasswordError] = useState('');
+  const [firstNameError, setFirstNameError] = useState('');
+  const [lastNameError, setLastNameError] = useState('');
+  const [otherError, setOtherError] = useState('');
   const [loading, setLoading] = useState(false);
   const history = useHistory();
   const [selectedDate, handleDateChange] = useState(new Date());
@@ -42,29 +42,29 @@ export default function SignUp() {
   );
   const handleSubmit = async (event) => {
     event.preventDefault();
-    setOtherError("");
-    setEmailError("");
-    setUsernameError("");
-    setFirstNameError("");
-    setLastNameError("");
-    setPasswordError("");
+    setOtherError('');
+    setEmailError('');
+    setUsernameError('');
+    setFirstNameError('');
+    setLastNameError('');
+    setPasswordError('');
 
     setLoading(true);
     if (passwordRef.current.value !== passwordConfirmRef.current.value) {
       setPasswordError(`Passwords do not match`);
     }
-    if (firstNameRef.current.value === "") {
-      setFirstNameError("First name is required");
+    if (firstNameRef.current.value === '') {
+      setFirstNameError('First name is required');
     }
-    if (lastNameRef.current.value === "") {
-      setLastNameError("Last name is required");
+    if (lastNameRef.current.value === '') {
+      setLastNameError('Last name is required');
     }
     if (
       !/^(([^<>()\[\]\\.,;:\s\W@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(
         emailRef.current.value
       )
     ) {
-      setEmailError("Email is not valid");
+      setEmailError('Email is not valid');
     }
     if (
       otherError ||
@@ -89,9 +89,9 @@ export default function SignUp() {
       };
       console.log(newUser);
       fetch(`${serverURL}/users/signup`, {
-        method: "post",
+        method: 'post',
         headers: {
-          "Content-Type": "application/json",
+          'Content-Type': 'application/json',
         },
         body: JSON.stringify(newUser),
       })
@@ -99,16 +99,18 @@ export default function SignUp() {
         .then((data) => {
           console.log(`data`, data);
           if (!data.errors) {
-            setWithExpiry("token", data.token, 28800000);
+            setWithExpiry('token', data.token, 28800000);
             setUserInfo(data.user);
-            history.push("/");
+            history.push('/');
           } else {
+            console.log('data.errors', data.errors);
+
             data.errors.forEach((error) => {
-              if (error.param === "username") {
+              if (error.param === 'username') {
                 setUsernameError(error.msg);
-              } else if (error.param === "email") {
+              } else if (error.param === 'email') {
                 setEmailError(error.msg);
-              } else if (error.param === "password") {
+              } else if (error.param === 'password') {
                 setPasswordError(error.msg);
               }
             });
@@ -124,137 +126,169 @@ export default function SignUp() {
   };
 
   return (
-    <Container component="main" maxWidth="xs" className={classes.cork}>
+    <Grid container component='main' maxWidth='xs' className={classes.cork}>
       {/* <CssBaseline /> */}
       <div className={classes.paper}>
         <Avatar className={classes.avatar}>
-          <LockOutlinedIcon />
+          <LockOutlinedIcon color='primary' />
         </Avatar>
-        <Typography component="h1" variant="h5">
+        <Typography component='h1' variant='h5'>
           Sign up
         </Typography>
-        {otherError && <Alert severity="error">{otherError}</Alert>}
+        {/* {otherError && <Alert severity='error'>{otherError}</Alert>} */}
         <form className={classes.form} onSubmit={handleSubmit} noValidate>
           <Grid container spacing={2}>
             <Grid item xs={12}>
-              {usernameError && <Alert severity="error">{usernameError}</Alert>}
-              <TextField
-                variant="outlined"
-                required
-                fullWidth
-                id="username"
-                inputRef={usernameRef}
-                label="Username"
-                name="username"
-                autoComplete="username"
-                onChange={(event) => {
-                  if (event.target.value.length < 3) {
-                    setUsernameError(
-                      "username must be at least 3 characters long."
-                    );
-                  } else {
-                    setUsernameError(null);
-                  }
-                }}
-              />
+              <Grid container spacing={1}>
+                {usernameError && (
+                  <Grid item xs={12}>
+                    <Alert severity='error'>{usernameError}</Alert>
+                  </Grid>
+                )}
+
+                <Grid item xs={12}>
+                  <TextField
+                    variant='outlined'
+                    required
+                    fullWidth
+                    id='username'
+                    inputRef={usernameRef}
+                    label='Username'
+                    name='username'
+                    autoComplete='username'
+                    className={classes.search}
+                    onChange={(event) => {
+                      if (event.target.value.length < 3) {
+                        setUsernameError(
+                          'username must be at least 3 characters long.'
+                        );
+                      } else {
+                        setUsernameError(null);
+                      }
+                    }}
+                  />
+                </Grid>
+              </Grid>
             </Grid>
             <Grid item xs={12} sm={6}>
               <TextField
-                autoComplete="fname"
-                name="firstName"
-                variant="outlined"
+                autoComplete='fname'
+                name='firstName'
+                variant='outlined'
                 required
                 fullWidth
-                id="firstName"
+                id='firstName'
                 inputRef={firstNameRef}
-                label="First Name"
+                label='First Name'
+                className={classes.search}
                 autoFocus
               />
             </Grid>
             <Grid item xs={12} sm={6}>
               <TextField
-                variant="outlined"
+                variant='outlined'
                 required
                 fullWidth
-                id="lastName"
+                className={classes.search}
+                id='lastName'
                 inputRef={lastNameRef}
-                label="Last Name"
-                name="lastName"
-                autoComplete="lname"
+                label='Last Name'
+                name='lastName'
+                autoComplete='lname'
               />
             </Grid>
             <Grid item xs={12}>
-              {emailError && <Alert severity="error">{emailError}</Alert>}
-              <TextField
-                variant="outlined"
-                required
-                fullWidth
-                id="email"
-                // onChange={(event)=>{if(event.target.value)}}
-                inputRef={emailRef}
-                label="Email Address"
-                name="email"
-                onChange={(event) => {
-                  if (
-                    !/^(([^<>()\[\]\\.,;:\s\W@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(
-                      event.target.value
-                    )
-                  ) {
-                    setEmailError("Please enter a valid email address");
-                  } else {
-                    setEmailError("");
-                  }
-                }}
-                autoComplete="email"
-              />
+              <Grid container spacing={1}>
+                {emailError && (
+                  <Grid item xs={12}>
+                    <Alert severity='error'>{emailError}</Alert>
+                  </Grid>
+                )}
+                <Grid item xs={12}>
+                  {' '}
+                  <TextField
+                    color='secondary'
+                    className={classes.search}
+                    variant='outlined'
+                    required
+                    fullWidth
+                    id='email'
+                    // onChange={(event)=>{if(event.target.value)}}
+                    inputRef={emailRef}
+                    label='Email Address'
+                    name='email'
+                    onChange={(event) => {
+                      if (
+                        !/^(([^<>()\[\]\\.,;:\s\W@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(
+                          event.target.value
+                        )
+                      ) {
+                        setEmailError('Please enter a valid email address');
+                      } else {
+                        setEmailError('');
+                      }
+                    }}
+                    autoComplete='email'
+                  />
+                </Grid>
+              </Grid>
             </Grid>
             <Grid item xs={12}>
               <DatePicker
                 disableFuture
-                variant="outlined"
+                variant='outlined'
                 fullWidth
-                id="birthdate"
+                id='birthdate'
+                className={classes.search}
                 inputRef={birthdayRef}
-                openTo="year"
-                format="dd/MM/yyyy"
-                label="Date of birth"
-                views={["year", "month", "date"]}
+                openTo='year'
+                format='dd/MM/yyyy'
+                label='Date of birth'
+                views={['year', 'month', 'date']}
                 value={selectedDate}
                 onChange={handleDateChange}
               />
             </Grid>
             <Grid item xs={12}>
-              {passwordError && <Alert severity="error">{passwordError}</Alert>}
+              <Grid container spacing={1}>
+                {passwordError && (
+                  <Grid item xs={12}>
+                    {' '}
+                    <Alert severity='error'>{passwordError}</Alert>
+                  </Grid>
+                )}
+              </Grid>
+
               <TextField
-                variant="outlined"
+                variant='outlined'
                 required
                 fullWidth
-                name="password"
-                label="Password"
-                type="password"
-                id="password"
+                name='password'
+                label='Password'
+                type='password'
+                id='password'
                 inputRef={passwordRef}
                 onChange={() => {
                   if (passwordRef.current.value.length < 6) {
                     setPasswordError(
-                      "Password must be at least 6 characters long"
+                      'Password must be at least 6 characters long'
                     );
                   } else {
                     setPasswordError(null);
                   }
                 }}
-                autoComplete="current-password"
+                autoComplete='current-password'
               />
             </Grid>
             <Grid item xs={12}>
               <TextField
-                variant="outlined"
+                variant='outlined'
                 required
                 fullWidth
-                name="passwordConfirm"
-                label="Confirm Password"
-                type="password"
-                id="passwordConfirm"
+                name='passwordConfirm'
+                label='Confirm Password'
+                type='password'
+                id='passwordConfirm'
                 inputRef={passwordConfirmRef}
                 onChange={() => {
                   if (
@@ -276,18 +310,17 @@ export default function SignUp() {
             </Grid>
           </Grid>
           <Button
-            type="submit"
+            type='submit'
             fullWidth
-            variant="contained"
-            color="primary"
+            variant='contained'
+            color='primary'
             className={classes.submit}
-            disabled={loading}
-          >
+            disabled={loading}>
             Sign Up
           </Button>
-          <Grid container justify="flex-end">
+          <Grid container justify='flex-end'>
             <Grid item>
-              <Link component={RouterLink} to="/signin" variant="body2">
+              <Link component={RouterLink} to='/signin' variant='body2'>
                 Already have an account? Sign in
               </Link>
             </Grid>
@@ -297,6 +330,6 @@ export default function SignUp() {
       <Box mt={5}>
         <Copyright />
       </Box>
-    </Container>
+    </Grid>
   );
 }
